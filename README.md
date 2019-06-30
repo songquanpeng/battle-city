@@ -1,5 +1,6 @@
 ## Introduction
 + Tank game
++ **Make sure you are using chrome browser or the game may not work properly**
 + **[Try it here](https://songwonderful.github.io/tank-game/)**
 + [Document here]()
 + Demo

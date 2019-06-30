@@ -31,14 +31,28 @@ function update() {
 }
 
 function updateBullets() {
-
+    for (let i = 0; i < game.bullets.length; i++) {
+        if(!game.bullets[i].alive){
+            game.bullets.splice(i, 1);
+        }
+    }
+    for (let i = 0; i < game.bullets.length; i++) {
+        game.bullets[i].move();
+    }
 }
 
 function updateTanks() {
+    for (let i = 0; i < game.tanks.length; i++) {
+        if(!game.tanks[i].alive){
+            game.tanks.splice(i, 1);
+        }
+    }
     game.tanks[0].move();
+    game.tanks[0].lastShotCount += 1;
     for (let i = 1; i < game.tanks.length; i++) {
         //TODO: enemy tank action logic
         game.tanks[i].move();
+        game.tanks[i].lastShotCount += 1;
     }
 }
 
@@ -69,6 +83,7 @@ document.onkeydown = function (e) {
             game.tanks[0].direction = DOWN;
             break;
         case "Space":
+            game.tanks[0].shot();
             break;
         case "F11":
             location.reload();
