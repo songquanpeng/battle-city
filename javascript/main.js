@@ -16,6 +16,7 @@ function main() {
     game.tanks.push(new Tank({x: 100, y: 300}, RIGHT, NORMAL_TANK));
     game.tanks.push(new Tank({x: 200, y: 600}, UP, SWIFT_TANK));
     game.tanks.push(new Tank({x: 300, y: 700}, DOWN, HEAVY_TANK));
+    document.getElementById("start").play();
 
     function tick() {
         update();
@@ -97,7 +98,7 @@ document.onkeydown = function (e) {
             game.tanks[0].direction = DOWN;
             break;
         case "Space":
-            game.tanks[0].shot();
+            game.tanks[0].shoot();
             break;
         case "F11":
             location.reload();

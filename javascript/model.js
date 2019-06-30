@@ -52,6 +52,7 @@ class Tank {
         if (this.blood <= 0) {
             this.blood = 0;
             this.alive = false;
+            document.getElementById("explosion").play();
         }
     }
 
@@ -123,10 +124,11 @@ class Tank {
         }
     }
 
-    shot() {
+    shoot() {
         if (this.lastShotCount >= this.shotInterval) {
             game.bullets.push(new Bullet(this.coordinate, this.direction, this.bullet.damage, this.bullet.speed));
             this.lastShotCount = 0;
+            document.getElementById("shoot").play();
         }
     }
 
