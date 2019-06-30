@@ -56,23 +56,69 @@ class Tank {
 
     move() {
         if (this.moving) {
+            let overlapping = false;
             switch (this.direction) {
                 case UP:
-                    this.coordinate.y -= this.speed;
+                    for (let i = 0; i < game.tanks.length; i++) {
+                        if (this.coordinate.y - this.radius < game.tanks[i].coordinate.y + game.tanks[i].radius
+                            && this.coordinate.y - this.radius > game.tanks[i].coordinate.y - game.tanks[i].radius
+                            && this.coordinate !== game.tanks[i].coordinate
+                            && Math.abs(this.coordinate.x-game.tanks[i].coordinate.x)<this.radius+game.tanks[i].radius) {
+                            overlapping = true;
+                            break;
+                        }
+                    }
+                    if(!overlapping){
+                        this.coordinate.y -= this.speed;
+                    }
                     break;
                 case DOWN:
-                    this.coordinate.y += this.speed;
+                    for (let i = 0; i < game.tanks.length; i++) {
+                        if (this.coordinate.y + this.radius < game.tanks[i].coordinate.y + game.tanks[i].radius
+                            && this.coordinate.y + this.radius > game.tanks[i].coordinate.y - game.tanks[i].radius
+                            && this.coordinate !== game.tanks[i].coordinate
+                            && Math.abs(this.coordinate.x-game.tanks[i].coordinate.x)<this.radius+game.tanks[i].radius) {
+                            overlapping = true;
+                            break;
+                        }
+                    }
+                    if(!overlapping){
+                        this.coordinate.y += this.speed;
+                    }
                     break;
                 case LEFT:
-                    this.coordinate.x -= this.speed;
+                    for (let i = 0; i < game.tanks.length; i++) {
+                        if (this.coordinate.x - this.radius < game.tanks[i].coordinate.x + game.tanks[i].radius
+                            && this.coordinate.x - this.radius > game.tanks[i].coordinate.x - game.tanks[i].radius
+                            && this.coordinate !== game.tanks[i].coordinate
+                            && Math.abs(this.coordinate.y-game.tanks[i].coordinate.y)<this.radius+game.tanks[i].radius) {
+                            overlapping = true;
+                            break;
+                        }
+                    }
+                    if(!overlapping){
+                        this.coordinate.x -= this.speed;
+                    }
                     break;
                 case RIGHT:
-                    this.coordinate.x += this.speed;
+                    for (let i = 0; i < game.tanks.length; i++) {
+                        if (this.coordinate.x + this.radius < game.tanks[i].coordinate.x + game.tanks[i].radius
+                            && this.coordinate.x + this.radius > game.tanks[i].coordinate.x - game.tanks[i].radius
+                            && this.coordinate !== game.tanks[i].coordinate
+                            && Math.abs(this.coordinate.y-game.tanks[i].coordinate.y)<this.radius+game.tanks[i].radius) {
+                            overlapping = true;
+                            break;
+                        }
+                    }
+                    if(!overlapping){
+                        this.coordinate.x += this.speed;
+                    }
                     break;
                 default:
                     break;
             }
-            this.coordinate = bound(this.coordinate, this.radius);
+
+            this.coordinate = bound(this.coordinate, this.radius); // Make the tank unable to cross the border
         }
     }
 
