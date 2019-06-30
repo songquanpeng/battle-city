@@ -221,7 +221,7 @@ class Bullet {
                     }
                     break;
                 default:
-                    console.error("Unexpected direction ");
+                    console.error("Unexpected direction");
                     break;
             }
         }
@@ -229,9 +229,13 @@ class Bullet {
 
     explosion() {
         this.alive = false;
+        game.explosions.push({
+            coordinate: this.coordinate,
+            type: BULLET_EXPLOSION
+        });
     }
 
-    checkAllTanks(){
+    checkAllTanks() {
         for (let i = 0; i < game.tanks.length; i++) {
             if (isHit(this.coordinate, game.tanks[i].coordinate, game.tanks[i].radius)) {
                 this.explosion();

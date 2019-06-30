@@ -3,7 +3,8 @@ let screen = undefined;
 let image = undefined;
 let game = {
     tanks: [],
-    bullets: []
+    bullets: [],
+    explosions: []
 };
 
 function main() {
@@ -32,7 +33,7 @@ function update() {
 
 function updateBullets() {
     for (let i = 0; i < game.bullets.length; i++) {
-        if(!game.bullets[i].alive){
+        if (!game.bullets[i].alive) {
             game.bullets.splice(i, 1);
         }
     }
@@ -43,7 +44,11 @@ function updateBullets() {
 
 function updateTanks() {
     for (let i = 0; i < game.tanks.length; i++) {
-        if(!game.tanks[i].alive){
+        if (!game.tanks[i].alive) {
+            game.explosions.push({
+                coordinate: game.tanks[i].coordinate,
+                type: TANK_EXPLOSION
+            });
             game.tanks.splice(i, 1);
         }
     }
@@ -62,6 +67,15 @@ function draw() {
     for (let i = 0; i < objects.length; i++) {
         objects[i].draw();
     }
+    for (let i = 0; i < game.explosions.length; i++) {
+        const explosion = game.explosions[i];
+        if (explosion.type === TANK_EXPLOSION) {
+            screen.drawImage(image, 320, 0, 32, 32, explosion.coordinate.x - 16, explosion.coordinate.y - 16, 32, 32);
+        } else if (explosion.type === BULLET_EXPLOSION) {
+            screen.drawImage(image, 352, 0, 32, 32, explosion.coordinate.x - 16, explosion.coordinate.y - 16, 32, 32);
+        }
+    }
+    game.explosions = [];
 }
 
 document.onkeydown = function (e) {
