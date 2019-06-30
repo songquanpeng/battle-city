@@ -3,7 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" content="tank game, 坦克大战">
     <title>Tank Game</title>
+    <script src="javascript/constant.js" type="text/javascript"></script>
+    <script src="javascript/model.js" type="text/javascript"></script>
+    <script src="javascript/main.js" type="text/javascript"></script>
     <style>
         html, body {
             width: 100%;
@@ -18,11 +22,11 @@
     <audio id="collect" src="./sound/collect.mp3"></audio>
     <audio id="explosion" src="./sound/explosion.mp3"></audio>
     <audio id="start" src="./sound/start.mp3"></audio>
-    <img src="image.gif" alt="">
+    <img id="image" src="image.gif" alt="">
 </div>
 <div>
     <canvas id="canvas" width="500" height="500" style="margin: 0 auto;display: block;background-color: black"></canvas>
-    <script src="./tank-game.js" type="text/javascript"></script>
 </div>
+<script>main()</script>
 </body>
 </html>

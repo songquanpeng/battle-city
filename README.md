@@ -1,6 +1,6 @@
 ## Introduction
 + Tank game
-+ **[Try it here]()**
++ **[Try it here](https://songwonderful.github.io/tank-game/)**
 + [Document here]()
 + Demo
 ![demo]()
