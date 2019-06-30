@@ -27,6 +27,18 @@
 <div>
     <canvas id="canvas" width="500" height="500" style="margin: 0 auto;display: block;background-color: black"></canvas>
 </div>
-<script>main()</script>
+<div id="prompt" style="color: #ffffff;text-align: center">
+    <h2>Press any key ...</h2>
+</div>
+<script>
+    let gameStarted = false;
+    onkeypress = function () {
+        if (!gameStarted) {
+            document.getElementById("prompt").style.display = "none";
+            gameStarted = true;
+            main();
+        }
+    }
+</script>
 </body>
 </html>
