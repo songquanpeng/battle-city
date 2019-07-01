@@ -2,9 +2,8 @@
 + Tank game
 + **Make sure you are using chrome browser or the game may not work properly**
 + **[Try it here](https://songwonderful.github.io/tank-game/)**
-+ [Document here]()
 + Demo
-![demo]()
+![demo](![demo](https://user-images.githubusercontent.com/39998050/60435546-723bc000-9c3c-11e9-8f33-dc3cd7c0a022.gif))
 
 ## Hot key
 |Key|Action|
@@ -16,3 +15,4 @@
 |D|Move right|
 |B|Rebirth|
 |Blank|Fire|
+|R|Reload the page|
