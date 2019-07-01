@@ -22,3 +22,13 @@ const CEMENT = 1;
 const TREE = 2;
 const WATER = 3;
 const ROAD = 4;
+
+// Action type
+const MOVE_UP = 0;
+const MOVE_DOWN = 1;
+const MOVE_LEFT = 2;
+const MOVE_RIGHT = 3;
+const STAY = 4;
+const SHOOT = 5;
+const DO_NOTHING = 6;
+const ACTIONS = [MOVE_UP, MOVE_DOWN, MOVE_LEFT, MOVE_RIGHT, STAY, SHOOT, DO_NOTHING];

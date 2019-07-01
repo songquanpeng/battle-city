@@ -10,6 +10,7 @@ class Tank {
         this.moving = true;
         this.canTankPass = false;
         this.canBulletPass = false;
+        this.actionList = [];
         this.bullet = {
             damage: 5,
             speed: 10
@@ -63,6 +64,7 @@ class Tank {
     }
 
     move() {
+
         if (this.moving) {
             let overlapping = false;
             let obstacles = game.tanks.concat(game.buildings);

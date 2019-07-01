@@ -67,16 +67,70 @@ function updateTanks() {
     game.tanks[0].move();
     game.tanks[0].lastShootCount += 1;
     for (let i = 1; i < game.tanks.length; i++) {
-        //TODO: the action logic of enemy tanks
-        let choose = Math.random();
-        if (choose > 0.95) {
-            game.tanks[i].shoot();
-            if (choose > 0.98) {
-                game.tanks[i].direction = randomChooseFrom(DIRECTIONS);
-            }
-        }
         game.tanks[i].move();
         game.tanks[i].lastShootCount += 1;
+    }
+    if (count % 5 === 0) {
+        for (let i = 1; i < game.tanks.length; i++) {
+            const playerTank = game.tanks[0];
+            const enemyTank = game.tanks[i];
+            AI(enemyTank, playerTank);
+        }
+    }
+}
+
+function AI(agent, target) {
+    switch (agent.actionList.pop()) {
+        case MOVE_UP:
+            agent.moving = true;
+            agent.direction = UP;
+            break;
+        case MOVE_DOWN:
+            agent.moving = true;
+            agent.direction = DOWN;
+            break;
+        case MOVE_LEFT:
+            agent.moving = true;
+            agent.direction = LEFT;
+            break;
+        case MOVE_RIGHT:
+            agent.moving = true;
+            agent.direction = RIGHT;
+            break;
+        case STAY:
+            agent.moving = false;
+            break;
+        case SHOOT:
+            agent.shoot();
+            break;
+        case DO_NOTHING:
+            break;
+        default:
+            agent.moving = true;
+            const random = Math.random();
+            if (random < 0.5) {
+                agent.actionList.push(randomChooseFrom(ACTIONS));
+                agent.actionList.concat([SHOOT, SHOOT, SHOOT, SHOOT]);
+            } else if (random < 0.8) {
+                if (Math.floor(random * 100) % 2 === 0) {
+                    if (agent.coordinate.x < target.coordinate.x) {
+                        agent.actionList.push(MOVE_RIGHT);
+                    } else {
+                        agent.actionList.push(MOVE_LEFT);
+                    }
+                } else {
+                    if (agent.coordinate.y < target.coordinate.y) {
+                        agent.actionList.push(MOVE_DOWN);
+                    } else {
+                        agent.actionList.push(MOVE_UP);
+                    }
+                }
+            } else if (random < 0.8) {
+                agent.actionList.concat([MOVE_UP, DO_NOTHING, SHOOT, MOVE_LEFT, DO_NOTHING, SHOOT, MOVE_DOWN, DO_NOTHING, SHOOT, MOVE_RIGHT, DO_NOTHING, SHOOT]);
+            } else {
+                agent.actionList.push(SHOOT);
+            }
+            break;
     }
 }
 
@@ -134,7 +188,7 @@ document.onkeydown = function (e) {
                 location.reload();
                 break;
             case "KeyB":
-                game.tanks[0] = new Tank({x: screen.canvas.width / 2, y: screen.canvas.height}, UP, NORMAL_TANK);
+                game.tanks[0] = new Tank({x: screen.canvas.width / 2, y: screen.canvas.height}, UP, PLAYER_TANK);
                 break;
             default:
                 break;
