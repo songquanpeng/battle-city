@@ -38,8 +38,8 @@ function update() {
     }
     count += 1;
     count %= 60;
-    updateBuildings();
     updateBullets();
+    updateBuildings();
     updateTanks();
 }
 
@@ -133,6 +133,9 @@ document.onkeydown = function (e) {
             case "KeyR":
                 location.reload();
                 break;
+            case "KeyB":
+                game.tanks[0] = new Tank({x: screen.canvas.width / 2, y: screen.canvas.height}, UP, NORMAL_TANK);
+                break;
             default:
                 break;
         }
@@ -165,22 +168,9 @@ function randomChooseFrom(array) {
 }
 
 function buildingsGenerator() {
-    for (let i = 0; i < screen.canvas.width / 16; i++) {
-        for (let j = 0; j < screen.canvas.height / 16; j++) {
-            let choose = Math.random();
-            if (choose >= 0.9) {
-                let type = BRICK;
-                if (choose <= 0.92) {
-                    type = BRICK;
-                } else if (choose < 0.94) {
-                    type = CEMENT;
-                } else if (choose < 0.98) {
-                    type = TREE;
-                } else {
-                    type = WATER;
-                }
-                game.buildings.push(new Building({x: i * 16, y: j * 16}, type));
-            }
+    for (let i = 20; i < screen.canvas.width / 16 - 20; i++) {
+        for (let j = 20; j < screen.canvas.height / 16 - 20; j++) {
+            game.buildings.push(new Building({x: i * 16, y: j * 16}, BRICK));
         }
     }
 }

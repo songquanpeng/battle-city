@@ -139,9 +139,25 @@ class Tank {
                     break;
             }
 
-            this.coordinate = bound(this.coordinate, this.radius); // Make the tank unable to cross the border
+            this.coordinate = Tank.bound(this.coordinate, this.radius); // Make the tank unable to cross the border
         }
     }
+
+    static bound(coordinate, radius) {
+        if (coordinate.x < radius) {
+            coordinate.x = radius;
+        } else if (coordinate.x + radius > screen.canvas.width) {
+            coordinate.x = screen.canvas.width - radius;
+        }
+        if (coordinate.y < radius) {
+            coordinate.y = radius;
+        } else if (coordinate.y + radius > screen.canvas.height) {
+            coordinate.y = screen.canvas.height - radius;
+        }
+
+        return coordinate;
+    }
+
 
     shoot() {
         if (this.lastShootCount >= this.shootInterval) {
@@ -180,16 +196,16 @@ class Bullet {
         let yOffset = 0;
         switch (this.direction) {
             case UP:
-                yOffset = -18;
+                yOffset = -20;
                 break;
             case DOWN:
-                yOffset = 18;
+                yOffset = 20;
                 break;
             case LEFT:
-                xOffset = -18;
+                xOffset = -20;
                 break;
             case RIGHT:
-                xOffset = 18;
+                xOffset = 20;
                 break;
             default:
                 break;
@@ -201,47 +217,47 @@ class Bullet {
         this.damage = damage;
         this.alive = true;
         this.speed = speed;
-        this.radius = 2;
+        this.radius = 1;
     }
 
     move() {
         if (this.alive) {
             switch (this.direction) {
                 case UP:
-                    this.coordinate.y -= this.speed;
-                    if (this.coordinate.y <= 0) {
+                    if (this.coordinate.y - this.speed <= 0) {
                         this.coordinate.y = 0;
                         this.explosion();
                     } else {
                         this.checkAllObstacles();
                     }
+                    this.coordinate.y -= this.speed;
                     break;
                 case DOWN:
-                    this.coordinate.y += this.speed;
-                    if (this.coordinate.y >= screen.canvas.height) {
+                    if (this.coordinate.y + this.speed >= screen.canvas.height) {
                         this.coordinate.y = screen.canvas.height;
                         this.explosion();
                     } else {
                         this.checkAllObstacles();
                     }
+                    this.coordinate.y += this.speed;
                     break;
                 case LEFT:
-                    this.coordinate.x -= this.speed;
-                    if (this.coordinate.x <= 0) {
+                    if (this.coordinate.x - this.speed <= 0) {
                         this.coordinate.x = 0;
                         this.explosion();
                     } else {
                         this.checkAllObstacles();
                     }
+                    this.coordinate.x -= this.speed;
                     break;
                 case RIGHT:
-                    this.coordinate.x += this.speed;
-                    if (this.coordinate.x >= screen.canvas.width) {
+                    if (this.coordinate.x + this.speed >= screen.canvas.width) {
                         this.coordinate.x = screen.canvas.width;
                         this.explosion();
                     } else {
                         this.checkAllObstacles();
                     }
+                    this.coordinate.x += this.speed;
                     break;
                 default:
                     console.error("Unexpected direction");
@@ -264,7 +280,7 @@ class Bullet {
             if (obstacles[i].canBulletPass) {
                 continue;
             }
-            if (isHit(this.coordinate, obstacles[i].coordinate, obstacles[i].radius)) {
+            if (Bullet.isHit(this.coordinate, obstacles[i].coordinate, obstacles[i].radius)) {
                 this.explosion();
                 obstacles[i].beAttacked(this);
                 break;
@@ -275,6 +291,13 @@ class Bullet {
     draw() {
         screen.drawImage(image, 6 * (this.direction) + 80, 96, 6, 6, this.coordinate.x - 3, this.coordinate.y - 3, 6, 6);
     }
+
+    static isHit(bulletCoordinate, targetCoordinate, targetRadius) {
+        return (bulletCoordinate.x >= targetCoordinate.x - targetRadius)
+            && (bulletCoordinate.x <= targetCoordinate.x + targetRadius)
+            && (bulletCoordinate.y >= targetCoordinate.y - targetRadius)
+            && (bulletCoordinate.y <= targetCoordinate.y + targetRadius)
+    }
 }
 
 class Building {
@@ -282,7 +305,7 @@ class Building {
         this.coordinate = coordinate;
         this.alive = true;
         this.type = type;
-        this.radius = 7;
+        this.radius = 8;
         switch (this.type) {
             case BRICK:
                 this.destoryLimit = 2;
@@ -320,26 +343,4 @@ class Building {
             screen.drawImage(image, 16 * (this.type), 96, 16, 16, this.coordinate.x - 8, this.coordinate.y - 8, 16, 16);
         }
     }
-}
-
-function bound(coordinate, radius) {
-    if (coordinate.x < radius) {
-        coordinate.x = radius;
-    } else if (coordinate.x + radius > screen.canvas.width) {
-        coordinate.x = screen.canvas.width - radius;
-    }
-    if (coordinate.y < radius) {
-        coordinate.y = radius;
-    } else if (coordinate.y + radius > screen.canvas.height) {
-        coordinate.y = screen.canvas.height - radius;
-    }
-
-    return coordinate;
-}
-
-function isHit(bulletCoordinate, tankCoordinate, tankRadius) {
-    return (bulletCoordinate.x > tankCoordinate.x - tankRadius)
-        && (bulletCoordinate.x < tankCoordinate.x + tankRadius)
-        && (bulletCoordinate.y > tankCoordinate.y - tankRadius)
-        && (bulletCoordinate.y < tankCoordinate.y + tankRadius)
 }

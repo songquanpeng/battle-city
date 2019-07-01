@@ -14,4 +14,5 @@
 |A|Move left|
 |S|Move down|
 |D|Move right|
+|B|Rebirth|
 |Blank|Fire|
