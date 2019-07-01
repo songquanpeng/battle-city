@@ -22,6 +22,7 @@ const CEMENT = 1;
 const TREE = 2;
 const WATER = 3;
 const ROAD = 4;
+const BUILDINGS = [BRICK, CEMENT, TREE, WATER];
 
 // Action type
 const MOVE_UP = 0;

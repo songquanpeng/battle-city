@@ -330,6 +330,9 @@ class Building {
                 this.canBulletPass = true;
                 break;
             default:
+                this.destoryLimit = 100;
+                this.canTankPass = true;
+                this.canBulletPass = true;
                 break;
         }
     }
