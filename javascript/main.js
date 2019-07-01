@@ -5,7 +5,8 @@ let count = 0;
 let game = {
     tanks: [],
     bullets: [],
-    explosions: []
+    explosions: [],
+    buildings: []
 };
 
 function main() {
@@ -13,6 +14,7 @@ function main() {
     image = document.getElementById('image');
     screen.canvas.width = window.innerWidth;
     screen.canvas.height = window.innerHeight;
+    buildingsGenerator();
     game.tanks.push(new Tank({x: screen.canvas.width / 2, y: screen.canvas.height}, UP, PLAYER_TANK));
     document.getElementById("start").play();
 
@@ -36,6 +38,7 @@ function update() {
     }
     count += 1;
     count %= 60;
+    updateBuildings();
     updateBullets();
     updateTanks();
 }
@@ -77,9 +80,17 @@ function updateTanks() {
     }
 }
 
+function updateBuildings() {
+    for (let i = 0; i < game.buildings.length; i++) {
+        if (!game.buildings[i].alive) {
+            game.buildings.splice(i, 1);
+        }
+    }
+}
+
 function draw() {
     screen.clearRect(0, 0, screen.canvas.width, screen.canvas.height);
-    let objects = game.bullets.concat(game.tanks);
+    let objects = game.bullets.concat(game.tanks).concat(game.buildings);
     for (let i = 0; i < objects.length; i++) {
         objects[i].draw();
     }
@@ -151,4 +162,25 @@ document.onkeyup = function (e) {
 
 function randomChooseFrom(array) {
     return array[Math.floor(Math.random() * array.length)]
+}
+
+function buildingsGenerator() {
+    for (let i = 0; i < screen.canvas.width / 16; i++) {
+        for (let j = 0; j < screen.canvas.height / 16; j++) {
+            let choose = Math.random();
+            if (choose >= 0.9) {
+                let type = BRICK;
+                if (choose <= 0.92) {
+                    type = BRICK;
+                } else if (choose < 0.94) {
+                    type = CEMENT;
+                } else if (choose < 0.98) {
+                    type = TREE;
+                } else {
+                    type = WATER;
+                }
+                game.buildings.push(new Building({x: i * 16, y: j * 16}, type));
+            }
+        }
+    }
 }

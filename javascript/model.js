@@ -8,6 +8,8 @@ class Tank {
         this.shootInterval = 60;
         this.alive = true;
         this.moving = true;
+        this.canTankPass = false;
+        this.canBulletPass = false;
         this.bullet = {
             damage: 5,
             speed: 10
@@ -63,13 +65,17 @@ class Tank {
     move() {
         if (this.moving) {
             let overlapping = false;
+            let obstacles = game.tanks.concat(game.buildings);
             switch (this.direction) {
                 case UP:
-                    for (let i = 0; i < game.tanks.length; i++) {
-                        if (this.coordinate.y - this.radius < game.tanks[i].coordinate.y + game.tanks[i].radius
-                            && this.coordinate.y - this.radius > game.tanks[i].coordinate.y - game.tanks[i].radius
-                            && this.coordinate !== game.tanks[i].coordinate
-                            && Math.abs(this.coordinate.x - game.tanks[i].coordinate.x) < this.radius + game.tanks[i].radius) {
+                    for (let i = 0; i < obstacles.length; i++) {
+                        if (obstacles[i].canTankPass) {
+                            continue;
+                        }
+                        if (this.coordinate.y - this.radius < obstacles[i].coordinate.y + obstacles[i].radius
+                            && this.coordinate.y - this.radius > obstacles[i].coordinate.y - obstacles[i].radius
+                            && this.coordinate !== obstacles[i].coordinate
+                            && Math.abs(this.coordinate.x - obstacles[i].coordinate.x) < this.radius + obstacles[i].radius) {
                             overlapping = true;
                             break;
                         }
@@ -79,11 +85,14 @@ class Tank {
                     }
                     break;
                 case DOWN:
-                    for (let i = 0; i < game.tanks.length; i++) {
-                        if (this.coordinate.y + this.radius < game.tanks[i].coordinate.y + game.tanks[i].radius
-                            && this.coordinate.y + this.radius > game.tanks[i].coordinate.y - game.tanks[i].radius
-                            && this.coordinate !== game.tanks[i].coordinate
-                            && Math.abs(this.coordinate.x - game.tanks[i].coordinate.x) < this.radius + game.tanks[i].radius) {
+                    for (let i = 0; i < obstacles.length; i++) {
+                        if (obstacles[i].canTankPass) {
+                            continue;
+                        }
+                        if (this.coordinate.y + this.radius < obstacles[i].coordinate.y + obstacles[i].radius
+                            && this.coordinate.y + this.radius > obstacles[i].coordinate.y - obstacles[i].radius
+                            && this.coordinate !== obstacles[i].coordinate
+                            && Math.abs(this.coordinate.x - obstacles[i].coordinate.x) < this.radius + obstacles[i].radius) {
                             overlapping = true;
                             break;
                         }
@@ -93,11 +102,14 @@ class Tank {
                     }
                     break;
                 case LEFT:
-                    for (let i = 0; i < game.tanks.length; i++) {
-                        if (this.coordinate.x - this.radius < game.tanks[i].coordinate.x + game.tanks[i].radius
-                            && this.coordinate.x - this.radius > game.tanks[i].coordinate.x - game.tanks[i].radius
-                            && this.coordinate !== game.tanks[i].coordinate
-                            && Math.abs(this.coordinate.y - game.tanks[i].coordinate.y) < this.radius + game.tanks[i].radius) {
+                    for (let i = 0; i < obstacles.length; i++) {
+                        if (obstacles[i].canTankPass) {
+                            continue;
+                        }
+                        if (this.coordinate.x - this.radius < obstacles[i].coordinate.x + obstacles[i].radius
+                            && this.coordinate.x - this.radius > obstacles[i].coordinate.x - obstacles[i].radius
+                            && this.coordinate !== obstacles[i].coordinate
+                            && Math.abs(this.coordinate.y - obstacles[i].coordinate.y) < this.radius + obstacles[i].radius) {
                             overlapping = true;
                             break;
                         }
@@ -107,11 +119,14 @@ class Tank {
                     }
                     break;
                 case RIGHT:
-                    for (let i = 0; i < game.tanks.length; i++) {
-                        if (this.coordinate.x + this.radius < game.tanks[i].coordinate.x + game.tanks[i].radius
-                            && this.coordinate.x + this.radius > game.tanks[i].coordinate.x - game.tanks[i].radius
-                            && this.coordinate !== game.tanks[i].coordinate
-                            && Math.abs(this.coordinate.y - game.tanks[i].coordinate.y) < this.radius + game.tanks[i].radius) {
+                    for (let i = 0; i < obstacles.length; i++) {
+                        if (obstacles[i].canTankPass) {
+                            continue;
+                        }
+                        if (this.coordinate.x + this.radius < obstacles[i].coordinate.x + obstacles[i].radius
+                            && this.coordinate.x + this.radius > obstacles[i].coordinate.x - obstacles[i].radius
+                            && this.coordinate !== obstacles[i].coordinate
+                            && Math.abs(this.coordinate.y - obstacles[i].coordinate.y) < this.radius + obstacles[i].radius) {
                             overlapping = true;
                             break;
                         }
@@ -132,7 +147,7 @@ class Tank {
         if (this.lastShootCount >= this.shootInterval) {
             game.bullets.push(new Bullet(this.coordinate, this.direction, this.bullet.damage, this.bullet.speed));
             this.lastShootCount = 0;
-            if(this.type===PLAYER_TANK){
+            if (this.type === PLAYER_TANK) {
                 document.getElementById("shoot").play();
             }
         }
@@ -198,7 +213,7 @@ class Bullet {
                         this.coordinate.y = 0;
                         this.explosion();
                     } else {
-                        this.checkAllTanks();
+                        this.checkAllObstacles();
                     }
                     break;
                 case DOWN:
@@ -207,7 +222,7 @@ class Bullet {
                         this.coordinate.y = screen.canvas.height;
                         this.explosion();
                     } else {
-                        this.checkAllTanks();
+                        this.checkAllObstacles();
                     }
                     break;
                 case LEFT:
@@ -216,7 +231,7 @@ class Bullet {
                         this.coordinate.x = 0;
                         this.explosion();
                     } else {
-                        this.checkAllTanks();
+                        this.checkAllObstacles();
                     }
                     break;
                 case RIGHT:
@@ -225,7 +240,7 @@ class Bullet {
                         this.coordinate.x = screen.canvas.width;
                         this.explosion();
                     } else {
-                        this.checkAllTanks();
+                        this.checkAllObstacles();
                     }
                     break;
                 default:
@@ -243,11 +258,15 @@ class Bullet {
         });
     }
 
-    checkAllTanks() {
-        for (let i = 0; i < game.tanks.length; i++) {
-            if (isHit(this.coordinate, game.tanks[i].coordinate, game.tanks[i].radius)) {
+    checkAllObstacles() {
+        let obstacles = game.tanks.concat(game.buildings);
+        for (let i = 0; i < obstacles.length; i++) {
+            if (obstacles[i].canBulletPass) {
+                continue;
+            }
+            if (isHit(this.coordinate, obstacles[i].coordinate, obstacles[i].radius)) {
                 this.explosion();
-                game.tanks[i].beAttacked(this);
+                obstacles[i].beAttacked(this);
                 break;
             }
         }
@@ -255,6 +274,51 @@ class Bullet {
 
     draw() {
         screen.drawImage(image, 6 * (this.direction) + 80, 96, 6, 6, this.coordinate.x - 3, this.coordinate.y - 3, 6, 6);
+    }
+}
+
+class Building {
+    constructor(coordinate, type) {
+        this.coordinate = coordinate;
+        this.alive = true;
+        this.type = type;
+        this.radius = 7;
+        switch (this.type) {
+            case BRICK:
+                this.destoryLimit = 2;
+                this.canTankPass = false;
+                this.canBulletPass = false;
+                break;
+            case CEMENT:
+                this.destoryLimit = 6;
+                this.canTankPass = false;
+                this.canBulletPass = false;
+                break;
+            case TREE:
+                this.destoryLimit = 100;
+                this.canTankPass = true;
+                this.canBulletPass = true;
+                break;
+            case WATER:
+                this.destoryLimit = 100;
+                this.canTankPass = false;
+                this.canBulletPass = true;
+                break;
+            default:
+                break;
+        }
+    }
+
+    beAttacked(bullet) {
+        if (bullet.damage >= this.destoryLimit) {
+            this.alive = false;
+        }
+    }
+
+    draw() {
+        if (this.alive) {
+            screen.drawImage(image, 16 * (this.type), 96, 16, 16, this.coordinate.x - 8, this.coordinate.y - 8, 16, 16);
+        }
     }
 }
 

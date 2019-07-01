@@ -15,3 +15,10 @@ const DIRECTIONS = [UP, DOWN, LEFT, RIGHT];
 // Explosion effect
 const TANK_EXPLOSION = 0;
 const BULLET_EXPLOSION = 1;
+
+// Building type
+const BRICK = 0;
+const CEMENT = 1;
+const TREE = 2;
+const WATER = 3;
+const ROAD = 4;
