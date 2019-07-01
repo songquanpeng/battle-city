@@ -1,6 +1,7 @@
 'use strict';
 let screen = undefined;
 let image = undefined;
+let count = 0;
 let game = {
     tanks: [],
     bullets: [],
@@ -12,10 +13,7 @@ function main() {
     image = document.getElementById('image');
     screen.canvas.width = window.innerWidth;
     screen.canvas.height = window.innerHeight;
-    game.tanks.push(new Tank({x: 500, y: 500}, LEFT, PLAYER_TANK));
-    game.tanks.push(new Tank({x: 100, y: 300}, RIGHT, NORMAL_TANK));
-    game.tanks.push(new Tank({x: 200, y: 600}, UP, SWIFT_TANK));
-    game.tanks.push(new Tank({x: 300, y: 700}, DOWN, HEAVY_TANK));
+    game.tanks.push(new Tank({x: screen.canvas.width / 2, y: screen.canvas.height}, UP, PLAYER_TANK));
     document.getElementById("start").play();
 
     function tick() {
@@ -28,6 +26,16 @@ function main() {
 }
 
 function update() {
+    if (count === 0) {
+        if (Math.random() > 0.7) {
+            game.tanks.push(new Tank({
+                x: Math.random() * screen.canvas.width,
+                y: 0
+            }, DOWN, randomChooseFrom(ENEMY_TANKS)));
+        }
+    }
+    count += 1;
+    count %= 60;
     updateBullets();
     updateTanks();
 }
@@ -54,11 +62,18 @@ function updateTanks() {
         }
     }
     game.tanks[0].move();
-    game.tanks[0].lastShotCount += 1;
+    game.tanks[0].lastShootCount += 1;
     for (let i = 1; i < game.tanks.length; i++) {
-        //TODO: enemy tank action logic
+        //TODO: the action logic of enemy tanks
+        let choose = Math.random();
+        if (choose > 0.95) {
+            game.tanks[i].shoot();
+            if (choose > 0.98) {
+                game.tanks[i].direction = randomChooseFrom(DIRECTIONS);
+            }
+        }
         game.tanks[i].move();
-        game.tanks[i].lastShotCount += 1;
+        game.tanks[i].lastShootCount += 1;
     }
 }
 
@@ -80,34 +95,38 @@ function draw() {
 }
 
 document.onkeydown = function (e) {
-    switch (e.code) {
-        case "KeyA":
-            game.tanks[0].moving = true;
-            game.tanks[0].direction = LEFT;
-            break;
-        case "KeyD":
-            game.tanks[0].moving = true;
-            game.tanks[0].direction = RIGHT;
-            break;
-        case "KeyW":
-            game.tanks[0].moving = true;
-            game.tanks[0].direction = UP;
-            break;
-        case "KeyS":
-            game.tanks[0].moving = true;
-            game.tanks[0].direction = DOWN;
-            break;
-        case "Space":
-            game.tanks[0].shoot();
-            break;
-        case "F11":
-            location.reload();
-            break;
-        case "KeyR":
-            location.reload();
-            break;
-        default:
-            break;
+    try {
+        switch (e.code) {
+            case "KeyA":
+                game.tanks[0].moving = true;
+                game.tanks[0].direction = LEFT;
+                break;
+            case "KeyD":
+                game.tanks[0].moving = true;
+                game.tanks[0].direction = RIGHT;
+                break;
+            case "KeyW":
+                game.tanks[0].moving = true;
+                game.tanks[0].direction = UP;
+                break;
+            case "KeyS":
+                game.tanks[0].moving = true;
+                game.tanks[0].direction = DOWN;
+                break;
+            case "Space":
+                game.tanks[0].shoot();
+                break;
+            case "F11":
+                location.reload();
+                break;
+            case "KeyR":
+                location.reload();
+                break;
+            default:
+                break;
+        }
+    } catch (e) {
+        console.log("o(*￣▽￣*)ブ");
     }
 };
 
@@ -129,3 +148,7 @@ document.onkeyup = function (e) {
             break;
     }
 };
+
+function randomChooseFrom(array) {
+    return array[Math.floor(Math.random() * array.length)]
+}

@@ -2,10 +2,10 @@ class Tank {
     constructor(coordinate, direction, type) {
         this.coordinate = coordinate;
         this.direction = direction;
-        this.lastShotCount = 0;
+        this.lastShootCount = 0;
         this.type = type;
         this.radius = 16;
-        this.shotInterval = 60;
+        this.shootInterval = 60;
         this.alive = true;
         this.moving = true;
         this.bullet = {
@@ -17,22 +17,25 @@ class Tank {
                 this.blood = 10;
                 this.armor = 0.6;
                 this.speed = 2.5;
-                this.attackInterval = 60;
+                this.attackInterval = 30;
                 this.bullet.damage = 5;
+                this.bullet.speed = 15;
                 break;
             case NORMAL_TANK:
                 this.blood = 10;
                 this.armor = 0.5;
                 this.speed = 2.5;
-                this.attackInterval = 60;
+                this.attackInterval = 40;
                 this.bullet.damage = 4;
+                this.bullet.speed = 10;
                 break;
             case SWIFT_TANK:
                 this.blood = 5;
                 this.armor = 0.3;
                 this.speed = 3.5;
-                this.attackInterval = 60;
+                this.attackInterval = 20;
                 this.bullet.damage = 3;
+                this.bullet.speed = 20;
                 break;
             case HEAVY_TANK:
                 this.blood = 20;
@@ -40,6 +43,7 @@ class Tank {
                 this.speed = 1.5;
                 this.attackInterval = 60;
                 this.bullet.damage = 7;
+                this.bullet.speed = 7;
                 break;
             default:
                 console.error("Unexpected tank type: " + this.type);
@@ -125,10 +129,12 @@ class Tank {
     }
 
     shoot() {
-        if (this.lastShotCount >= this.shotInterval) {
+        if (this.lastShootCount >= this.shootInterval) {
             game.bullets.push(new Bullet(this.coordinate, this.direction, this.bullet.damage, this.bullet.speed));
-            this.lastShotCount = 0;
-            document.getElementById("shoot").play();
+            this.lastShootCount = 0;
+            if(this.type===PLAYER_TANK){
+                document.getElementById("shoot").play();
+            }
         }
     }
 
@@ -141,10 +147,10 @@ class Tank {
                 screen.drawImage(image, 32 * (this.direction), 32, 32, 32, this.coordinate.x - 16, this.coordinate.y - 16, 32, 32);
                 break;
             case SWIFT_TANK:
-                screen.drawImage(image, 32 * (this.direction), 32, 32, 32, this.coordinate.x - 16, this.coordinate.y - 16, 32, 32);
+                screen.drawImage(image, 32 * (4 + this.direction), 32, 32, 32, this.coordinate.x - 16, this.coordinate.y - 16, 32, 32);
                 break;
             case HEAVY_TANK:
-                screen.drawImage(image, 32 * (this.direction), 32 * 2, 32, 32, this.coordinate.x - 16, this.coordinate.y - 16, 32, 32);
+                screen.drawImage(image, 32 * (8 + this.direction), 32 * 2, 32, 32, this.coordinate.x - 16, this.coordinate.y - 16, 32, 32);
                 break;
             default:
                 break;
