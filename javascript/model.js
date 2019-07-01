@@ -19,8 +19,8 @@ class Tank {
             case PLAYER_TANK:
                 this.blood = 10;
                 this.armor = 0.6;
-                this.speed = 2.5;
-                this.attackInterval = 30;
+                this.speed = 3;
+                this.attackInterval = 20;
                 this.bullet.damage = 5;
                 this.bullet.speed = 15;
                 break;
@@ -43,7 +43,7 @@ class Tank {
             case HEAVY_TANK:
                 this.blood = 20;
                 this.armor = 0.7;
-                this.speed = 1.5;
+                this.speed = 1;
                 this.attackInterval = 60;
                 this.bullet.damage = 7;
                 this.bullet.speed = 7;

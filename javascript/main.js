@@ -212,6 +212,9 @@ document.onkeyup = function (e) {
         case "KeyS":
             game.tanks[0].moving = false;
             break;
+        case "KeyC":
+            game.buildings = [];
+            break;
         default:
             break;
     }

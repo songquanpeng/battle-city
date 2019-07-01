@@ -16,3 +16,4 @@
 |B|Rebirth|
 |Blank|Fire|
 |R|Reload the page|
+|C|Remove all buildings|
