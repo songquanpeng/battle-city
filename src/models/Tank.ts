@@ -2,7 +2,7 @@ import { AUDIO, DIRECTION, IMAGE, TANK } from "../Constants";
 
 import { GAME, CONTEXT } from "../index";
 
-import { Coordinate, Entity } from "./Utils";
+import { Coordinate, Entity } from "./General";
 
 import { Bullet } from "./Bullet";
 
@@ -90,8 +90,8 @@ class Tank implements Entity {
     this.blood = Math.min(30, this.blood + 1);
     this.speed = Math.min(10, this.speed + 0.1);
     this.armor = Math.min(0.8, this.armor + 0.04);
-    this.bullet.speed = Math.min(30, this.bullet.speed + 0.5);
-    this.bullet.damage = Math.min(10, this.bullet.damage + 0.5);
+    this.bullet.speed = Math.min(25, this.bullet.speed + 0.25);
+    this.bullet.damage = Math.min(30, this.bullet.damage + 0.5);
     this.shootInterval = Math.max(10, this.shootInterval - 2);
   }
 

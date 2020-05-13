@@ -4,7 +4,7 @@ import { CONTEXT, GAME } from "../index";
 
 import { Tank } from "./Tank";
 
-import { Coordinate, Entity } from "./Utils";
+import { Coordinate, Entity } from "./General";
 
 class Bullet implements Entity {
   canTankPass: boolean;

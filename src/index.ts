@@ -1,6 +1,4 @@
 import {
-  ACTION,
-  ACTIONS,
   AUDIO,
   BUILDINGS,
   CANVAS,
@@ -15,11 +13,22 @@ import { Tank } from "./models/Tank";
 import { Bullet } from "./models/Bullet";
 import { Building } from "./models/Building";
 
-import { Entity } from "./models/Utils";
+import { Entity } from "./models/General";
+import { AI } from "./AI";
+import { randomChooseFrom } from "./Utils";
+import { buildingsGenerator } from "./MapGenerator";
 
 let count = 0;
 let paused = false;
 let CONTEXT: any;
+
+let keyADown: boolean = false;
+let keyDDown: boolean = false;
+let keyWDown: boolean = false;
+let keySDown: boolean = false;
+
+let touchPointX = 0;
+let touchPointY = 0;
 
 const GAME: {
   tanks: Tank[];
@@ -40,14 +49,13 @@ function main() {
   buildingsGenerator();
   loadPlayerTank();
   AUDIO.start.play().then(() => {});
-
+  registerEvent();
   function tick() {
     update();
     draw();
     savePlayerTank();
     requestAnimationFrame(tick);
   }
-
   tick();
 }
 
@@ -148,79 +156,6 @@ function updateTanks() {
   }
 }
 
-function AI(agent: Tank, target: Entity) {
-  switch (agent.actionList.pop()) {
-    case ACTION.MOVE_UP:
-      agent.moving = true;
-      agent.direction = DIRECTION.UP;
-      break;
-    case ACTION.MOVE_DOWN:
-      agent.moving = true;
-      agent.direction = DIRECTION.DOWN;
-      break;
-    case ACTION.MOVE_LEFT:
-      agent.moving = true;
-      agent.direction = DIRECTION.LEFT;
-      break;
-    case ACTION.MOVE_RIGHT:
-      agent.moving = true;
-      agent.direction = DIRECTION.RIGHT;
-      break;
-    case ACTION.STAY:
-      agent.moving = false;
-      break;
-    case ACTION.SHOOT:
-      agent.shoot();
-      break;
-    case ACTION.DO_NOTHING:
-      break;
-    default:
-      agent.moving = true;
-      const random = Math.random();
-      if (random < 0.5) {
-        agent.actionList.push(randomChooseFrom(ACTIONS));
-        agent.actionList.concat([
-          ACTION.SHOOT,
-          ACTION.SHOOT,
-          ACTION.SHOOT,
-          ACTION.SHOOT,
-        ]);
-      } else if (random < 0.8) {
-        if (Math.floor(random * 100) % 2 === 0) {
-          if (agent.coordinate.x < target.coordinate.x) {
-            agent.actionList.push(ACTION.MOVE_RIGHT);
-          } else {
-            agent.actionList.push(ACTION.MOVE_LEFT);
-          }
-        } else {
-          if (agent.coordinate.y < target.coordinate.y) {
-            agent.actionList.push(ACTION.MOVE_DOWN);
-          } else {
-            agent.actionList.push(ACTION.MOVE_UP);
-          }
-        }
-      } else if (random < 0.8) {
-        agent.actionList.concat([
-          ACTION.MOVE_UP,
-          ACTION.DO_NOTHING,
-          ACTION.SHOOT,
-          ACTION.MOVE_LEFT,
-          ACTION.DO_NOTHING,
-          ACTION.SHOOT,
-          ACTION.MOVE_DOWN,
-          ACTION.DO_NOTHING,
-          ACTION.SHOOT,
-          ACTION.MOVE_RIGHT,
-          ACTION.DO_NOTHING,
-          ACTION.SHOOT,
-        ]);
-      } else {
-        agent.actionList.push(ACTION.SHOOT);
-      }
-      break;
-  }
-}
-
 function updateBuildings() {
   for (let i = 0; i < GAME.buildings.length; i++) {
     if (!GAME.buildings[i].alive) {
@@ -293,155 +228,115 @@ function showStatus() {
   );
 }
 
-let keyADown: boolean = false;
-let keyDDown: boolean = false;
-let keyWDown: boolean = false;
-let keySDown: boolean = false;
+function registerEvent() {
+  document.onkeydown = function (e) {
+    try {
+      switch (e.code) {
+        case "KeyA":
+          keyADown = true;
+          GAME.tanks[0].moving = true;
+          GAME.tanks[0].direction = DIRECTION.LEFT;
+          break;
+        case "KeyD":
+          keyDDown = true;
+          GAME.tanks[0].moving = true;
+          GAME.tanks[0].direction = DIRECTION.RIGHT;
+          break;
+        case "KeyW":
+          keyWDown = true;
+          GAME.tanks[0].moving = true;
+          GAME.tanks[0].direction = DIRECTION.UP;
+          break;
+        case "KeyS":
+          keySDown = true;
+          GAME.tanks[0].moving = true;
+          GAME.tanks[0].direction = DIRECTION.DOWN;
+          break;
+        case "KeyP":
+          paused = !paused;
+          AUDIO.pause.play().then(() => {});
+          break;
+        case "Space":
+          GAME.tanks[0].shoot();
+          break;
+        case "F11":
+          location.reload();
+          break;
+        case "KeyR":
+          location.reload();
+          break;
+        case "KeyB":
+          generatePlayTank();
+          break;
+        default:
+          break;
+      }
+    } catch (e) {
+      console.log(e.toString());
+    }
+  };
 
-document.onkeydown = function (e) {
-  try {
+  document.onmousedown = function (e) {
+    if (e.button == 0) {
+      GAME.tanks[0].shoot();
+    }
+  };
+
+  document.onkeyup = function (e) {
     switch (e.code) {
       case "KeyA":
-        keyADown = true;
-        GAME.tanks[0].moving = true;
-        GAME.tanks[0].direction = DIRECTION.LEFT;
+        keyADown = false;
         break;
       case "KeyD":
-        keyDDown = true;
-        GAME.tanks[0].moving = true;
-        GAME.tanks[0].direction = DIRECTION.RIGHT;
+        keyDDown = false;
         break;
       case "KeyW":
-        keyWDown = true;
-        GAME.tanks[0].moving = true;
-        GAME.tanks[0].direction = DIRECTION.UP;
+        keyWDown = false;
         break;
       case "KeyS":
-        keySDown = true;
-        GAME.tanks[0].moving = true;
-        GAME.tanks[0].direction = DIRECTION.DOWN;
+        keySDown = false;
         break;
-      case "KeyP":
-        paused = !paused;
-        AUDIO.pause.play().then(() => {});
-        break;
-      case "Space":
-        GAME.tanks[0].shoot();
-        break;
-      case "F11":
-        location.reload();
-        break;
-      case "KeyR":
-        location.reload();
-        break;
-      case "KeyB":
-        generatePlayTank();
+      case "KeyC":
+        GAME.buildings = [];
         break;
       default:
         break;
     }
-  } catch (e) {
-    console.log(e.toString());
-  }
-};
+    if (!keySDown && !keyWDown && !keyDDown && !keyADown)
+      GAME.tanks[0].moving = false;
+  };
 
-document.onmousedown = function (e) {
-  if (e.button == 0) {
-    GAME.tanks[0].shoot();
-  }
-};
+  document.ontouchstart = function (e) {
+    touchPointX = e.touches[0].pageX;
+    touchPointY = e.touches[0].pageY;
+  };
 
-document.onkeyup = function (e) {
-  switch (e.code) {
-    case "KeyA":
-      keyADown = false;
-      break;
-    case "KeyD":
-      keyDDown = false;
-      break;
-    case "KeyW":
-      keyWDown = false;
-      break;
-    case "KeyS":
-      keySDown = false;
-      break;
-    case "KeyC":
-      GAME.buildings = [];
-      break;
-    default:
-      break;
-  }
-  if (!keySDown && !keyWDown && !keyDDown && !keyADown)
-    GAME.tanks[0].moving = false;
-};
-
-function randomChooseFrom(array: Array<any>) {
-  return array[Math.floor(Math.random() * array.length)];
-}
-
-function buildingsGenerator() {
-  const xRange = Math.floor(CONTEXT.canvas.width / 16);
-  const yRange = Math.floor(CONTEXT.canvas.height / 16);
-  for (let i = 0; i < 15 + Math.floor(Math.random() * 10); i++) {
-    let buildingType = randomChooseFrom(BUILDINGS);
-    let x = Math.floor(Math.random() * xRange);
-    let y = Math.floor(Math.random() * yRange);
-    let width = 2;
-    let height = 2;
-    if (Math.floor(Math.random() * 10) % 2 === 0) {
-      width = Math.floor(Math.random() * (xRange - x));
-    } else {
-      height = Math.floor(Math.random() * (yRange - y));
+  document.ontouchend = function (e) {
+    let endTouchPointX = e.changedTouches[0].pageX;
+    let endTouchPointY = e.changedTouches[0].pageY;
+    let deltaX = Math.abs(endTouchPointX - touchPointX);
+    let deltaY = Math.abs(endTouchPointY - touchPointY);
+    if (GAME.tanks[0]) {
+      GAME.tanks[0].moving = true;
+      GAME.tanks[0].shoot();
     }
-    for (let i = x; i < x + width; i++) {
-      for (let j = y; j < y + height; j++) {
-        GAME.buildings.push(
-          new Building(
-            {
-              x: i * 16,
-              y: j * 16,
-            },
-            buildingType
-          )
-        );
+    if (Math.max(deltaX, deltaY) < 30) {
+      return;
+    }
+    if (deltaX > deltaY) {
+      if (endTouchPointX > touchPointX) {
+        GAME.tanks[0].direction = DIRECTION.RIGHT;
+      } else {
+        GAME.tanks[0].direction = DIRECTION.LEFT;
+      }
+    } else {
+      if (endTouchPointY > touchPointY) {
+        GAME.tanks[0].direction = DIRECTION.DOWN;
+      } else {
+        GAME.tanks[0].direction = DIRECTION.UP;
       }
     }
-  }
+  };
 }
-
-let touchPointX = 0;
-let touchPointY = 0;
-
-document.ontouchstart = function (e) {
-  touchPointX = e.touches[0].pageX;
-  touchPointY = e.touches[0].pageY;
-};
-
-document.ontouchend = function (e) {
-  let endTouchPointX = e.changedTouches[0].pageX;
-  let endTouchPointY = e.changedTouches[0].pageY;
-  let deltaX = Math.abs(endTouchPointX - touchPointX);
-  let deltaY = Math.abs(endTouchPointY - touchPointY);
-  if (GAME.tanks[0]) {
-    GAME.tanks[0].moving = true;
-    GAME.tanks[0].shoot();
-  }
-  if (Math.max(deltaX, deltaY) < 30) {
-    return;
-  }
-  if (deltaX > deltaY) {
-    if (endTouchPointX > touchPointX) {
-      GAME.tanks[0].direction = DIRECTION.RIGHT;
-    } else {
-      GAME.tanks[0].direction = DIRECTION.LEFT;
-    }
-  } else {
-    if (endTouchPointY > touchPointY) {
-      GAME.tanks[0].direction = DIRECTION.DOWN;
-    } else {
-      GAME.tanks[0].direction = DIRECTION.UP;
-    }
-  }
-};
 
 export { main, GAME, CONTEXT };

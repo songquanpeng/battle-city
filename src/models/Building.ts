@@ -2,7 +2,7 @@ import { BUILDING, IMAGE } from "../Constants";
 
 import { CONTEXT } from "../index";
 
-import { Coordinate, Entity } from "./Utils";
+import { Coordinate, Entity } from "./General";
 
 import { Bullet } from "./Bullet";
 

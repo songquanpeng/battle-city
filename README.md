@@ -20,3 +20,5 @@
 - [ ] Mode selection page.
 - [ ] PvP mode.
 - [x] Support touch screen devices.
+- [ ] More rational map generator.
+- [ ] More intelligent enemy AI.
