@@ -1,6 +1,5 @@
 import {
   AUDIO,
-  BUILDINGS,
   CANVAS,
   DIRECTION,
   ENEMY_TANKS,
@@ -73,7 +72,9 @@ function savePlayerTank() {
 }
 
 function loadPlayerTank() {
-  let state = JSON.parse(window.localStorage.getItem("state"));
+  let data = window.localStorage.getItem("state");
+  if (!data) data = "";
+  let state = JSON.parse(data);
   let tank = new Tank(
     { x: context.canvas.width / 2, y: context.canvas.height },
     DIRECTION.UP,

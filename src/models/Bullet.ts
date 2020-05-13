@@ -31,6 +31,8 @@ class Bullet implements Entity {
   ) {
     this.direction = direction;
     this.shooter = shooter;
+    this.canBulletPass = false;
+    this.canTankPass = false;
     let xOffset = 0;
     let yOffset = 0;
     switch (this.direction) {

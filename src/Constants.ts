@@ -19,20 +19,17 @@ enum EXPLOSION {
   BULLET_EXPLOSION,
 }
 
+// The sequence cannot be changed, check out Building.ts line 62
 enum BUILDING {
   BRICK,
   CEMENT,
   TREE,
   WATER,
   ROAD,
+  NONE,
 }
 
-const BUILDINGS = [
-  BUILDING.BRICK,
-  BUILDING.CEMENT,
-  BUILDING.TREE,
-  BUILDING.WATER,
-];
+const BUILDINGS = [BUILDING.BRICK, BUILDING.CEMENT, BUILDING.TREE];
 
 enum ACTION {
   MOVE_UP,
