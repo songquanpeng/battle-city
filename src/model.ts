@@ -153,9 +153,9 @@ class Tank implements Entity {
                 if (obstacles[i].canTankPass) {
                     continue;
                 }
-                if (Math.abs(this.coordinate.y - obstacles[i].coordinate.y) < this.radius + obstacles[i].radius - offset
+                if (Math.abs(this.coordinate.y - obstacles[i].coordinate.y) < this.radius + obstacles[i].radius
                     && this.coordinate !== obstacles[i].coordinate
-                    && Math.abs(this.coordinate.x - obstacles[i].coordinate.x) < this.radius + obstacles[i].radius - offset) {
+                    && Math.abs(this.coordinate.x - obstacles[i].coordinate.x) < this.radius + obstacles[i].radius) {
                     overlapping = true;
                     this.coordinate.x -= xDelta;
                     this.coordinate.y -= yDelta;

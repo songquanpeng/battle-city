@@ -30,10 +30,8 @@ function main() {
     CONTEXT.canvas.width = window.innerWidth;
     CONTEXT.canvas.height = window.innerHeight;
     buildingsGenerator();
-    let tank = new Tank({x: CONTEXT.canvas.width / 2, y: CONTEXT.canvas.height}, DIRECTION.UP, TANK.PLAYER_TANK);
-    GAME.tanks.push(tank);
+    generatePlayTank();
     AUDIO.start.play();
-
     function tick() {
         update();
         draw();
@@ -41,6 +39,11 @@ function main() {
     }
 
     tick();
+}
+
+function generatePlayTank() {
+    let tank = new Tank({x: CONTEXT.canvas.width / 2, y: CONTEXT.canvas.height}, DIRECTION.UP, TANK.PLAYER_TANK);
+    GAME.tanks.unshift(tank);
 }
 
 function update() {
@@ -71,6 +74,7 @@ function updateBullets() {
 }
 
 function updateTanks() {
+    let isPlayerDied = false;
     for (let i = 0; i < GAME.tanks.length; i++) {
         if (!GAME.tanks[i].alive) {
             GAME.explosions.push({
@@ -78,6 +82,7 @@ function updateTanks() {
                 type: EXPLOSION.TANK_EXPLOSION
             });
             GAME.tanks.splice(i, 1);
+            isPlayerDied = i == 0;
         }
     }
     GAME.tanks[0].move();
@@ -92,6 +97,11 @@ function updateTanks() {
             const enemyTank = GAME.tanks[i];
             AI(enemyTank, playerTank);
         }
+    }
+    if(isPlayerDied){
+        AUDIO.game_over.play().then(r => {
+            generatePlayTank();
+        });
     }
 }
 
@@ -160,6 +170,7 @@ function updateBuildings() {
 
 function draw() {
     CONTEXT.clearRect(0, 0, CONTEXT.canvas.width, CONTEXT.canvas.height);
+    //showStatus();
     let objects: Entity[] = GAME.tanks;
     objects = objects.concat(GAME.bullets);
     objects = objects.concat(GAME.buildings);
@@ -174,13 +185,24 @@ function draw() {
             CONTEXT.drawImage(IMAGE, 352, 0, 32, 32, explosion.coordinate.x - 16, explosion.coordinate.y - 16, 32, 32);
         }
     }
+    showStatus();
     GAME.explosions = [];
+}
+
+function showStatus() {
+    CONTEXT.font = "20px monospace";
+    CONTEXT.fillStyle = "white";
+    let player = GAME.tanks[0];
+    CONTEXT.fillText(`blood: ${player.blood.toFixed(1)}\narmor: ${player.armor}`, 20, 30);
+    CONTEXT.fillText(`speed: ${player.speed}\nlevel: ${player.bullet.damage}`, 20, 50);
+    CONTEXT.fillText(`bullet damage: ${player.bullet.damage}\nbullet speed: ${player.bullet.speed}`, 20, 70);
 }
 
 let keyADown: boolean = false;
 let keyDDown: boolean = false;
 let keyWDown: boolean = false;
 let keySDown: boolean = false;
+
 document.onkeydown = function (e) {
     try {
         switch (e.code) {
@@ -214,16 +236,19 @@ document.onkeydown = function (e) {
                 location.reload();
                 break;
             case "KeyB":
-                GAME.tanks[0] = new Tank({
-                    x: CONTEXT.canvas.width / 2,
-                    y: CONTEXT.canvas.height
-                }, DIRECTION.UP, TANK.PLAYER_TANK);
+                generatePlayTank();
                 break;
             default:
                 break;
         }
     } catch (e) {
         console.log(e.toString());
+    }
+};
+
+document.onmousedown = function (e) {
+    if(e.button == 0) {
+        GAME.tanks[0].shoot();
     }
 };
 

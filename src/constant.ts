@@ -34,6 +34,7 @@ class AudioManager {
     pause = <HTMLAudioElement>document.getElementById("pause");
     pick = <HTMLAudioElement>document.getElementById("pick");
     level_up = <HTMLAudioElement>document.getElementById("level_up");
+    game_over = <HTMLAudioElement>document.getElementById("game_over");
 }
 
 const AUDIO = new AudioManager();
