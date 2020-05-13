@@ -1,5 +1,61 @@
-class Tank {
-    constructor(coordinate, direction, type) {
+import {
+    ACTION,
+    ACTIONS,
+    AUDIO,
+    BUILDINGS,
+    DIRECTION,
+    ENEMY_TANKS,
+    BUILDING,
+    EXPLOSION,
+    IMAGE,
+    TANK
+} from "./constant";
+
+import {
+    GAME,
+    CONTEXT,
+} from "./index";
+
+class Coordinate {
+    x: number;
+    y: number;
+
+    constructor(x: number, y: number) {
+        this.x = x;
+        this.y = y;
+    }
+}
+
+interface Entity {
+    coordinate: Coordinate;
+    radius: number;
+    canTankPass: boolean;
+    canBulletPass: boolean;
+
+    draw(): void;
+
+    beAttacked(param: Bullet): void;
+}
+
+class Tank implements Entity {
+    coordinate: Coordinate;
+    direction: DIRECTION;
+    lastShootCount: number;
+    type: TANK;
+    radius: number;
+    shootInterval: number;
+    alive: boolean;
+    moving: boolean;
+    canTankPass: boolean;
+    canBulletPass: boolean;
+    actionList: any[];
+    bullet: { damage: number; speed: number };
+    blood: number;
+    armor: number;
+    speed: number;
+    attackInterval: number;
+
+    constructor(coordinate: Coordinate, direction: DIRECTION, type: TANK) {
         this.coordinate = coordinate;
         this.direction = direction;
         this.lastShootCount = 0;
@@ -15,8 +71,12 @@ class Tank {
             damage: 5,
             speed: 10
         };
+        this.blood = 10;
+        this.armor = 0.5;
+        this.speed = 2.5;
+        this.attackInterval = 40;
         switch (this.type) {
-            case PLAYER_TANK:
+            case TANK.PLAYER_TANK:
                 this.blood = 10;
                 this.armor = 0.6;
                 this.speed = 3;
@@ -24,7 +84,7 @@ class Tank {
                 this.bullet.damage = 5;
                 this.bullet.speed = 15;
                 break;
-            case NORMAL_TANK:
+            case TANK.NORMAL_TANK:
                 this.blood = 10;
                 this.armor = 0.5;
                 this.speed = 2.5;
@@ -32,7 +92,7 @@ class Tank {
                 this.bullet.damage = 4;
                 this.bullet.speed = 10;
                 break;
-            case SWIFT_TANK:
+            case TANK.SWIFT_TANK:
                 this.blood = 5;
                 this.armor = 0.3;
                 this.speed = 3.5;
@@ -40,7 +100,7 @@ class Tank {
                 this.bullet.damage = 3;
                 this.bullet.speed = 20;
                 break;
-            case HEAVY_TANK:
+            case TANK.HEAVY_TANK:
                 this.blood = 20;
                 this.armor = 0.7;
                 this.speed = 1;
@@ -54,22 +114,22 @@ class Tank {
         }
     }
 
-    beAttacked(bullet) {
+    beAttacked(bullet: { damage: number; }) {
         this.blood -= bullet.damage * this.armor;
         if (this.blood <= 0) {
             this.blood = 0;
             this.alive = false;
-            document.getElementById("explosion").play();
+            AUDIO.explosion.play();
         }
     }
 
     move() {
-
         if (this.moving) {
             let overlapping = false;
-            let obstacles = game.tanks.concat(game.buildings);
+            let obstacles: Entity[] = GAME.tanks;
+            obstacles = obstacles.concat(GAME.buildings);
             switch (this.direction) {
-                case UP:
+                case DIRECTION.UP:
                     for (let i = 0; i < obstacles.length; i++) {
                         if (obstacles[i].canTankPass) {
                             continue;
@@ -86,7 +146,7 @@ class Tank {
                         this.coordinate.y -= this.speed;
                     }
                     break;
-                case DOWN:
+                case DIRECTION.DOWN:
                     for (let i = 0; i < obstacles.length; i++) {
                         if (obstacles[i].canTankPass) {
                             continue;
@@ -103,7 +163,7 @@ class Tank {
                         this.coordinate.y += this.speed;
                     }
                     break;
-                case LEFT:
+                case DIRECTION.LEFT:
                     for (let i = 0; i < obstacles.length; i++) {
                         if (obstacles[i].canTankPass) {
                             continue;
@@ -120,7 +180,7 @@ class Tank {
                         this.coordinate.x -= this.speed;
                     }
                     break;
-                case RIGHT:
+                case DIRECTION.RIGHT:
                     for (let i = 0; i < obstacles.length; i++) {
                         if (obstacles[i].canTankPass) {
                             continue;
@@ -145,16 +205,16 @@ class Tank {
         }
     }
 
-    static bound(coordinate, radius) {
+    static bound(coordinate: Coordinate, radius: number) {
         if (coordinate.x < radius) {
             coordinate.x = radius;
-        } else if (coordinate.x + radius > screen.canvas.width) {
-            coordinate.x = screen.canvas.width - radius;
+        } else if (coordinate.x + radius > CONTEXT.canvas.width) {
+            coordinate.x = CONTEXT.canvas.width - radius;
         }
         if (coordinate.y < radius) {
             coordinate.y = radius;
-        } else if (coordinate.y + radius > screen.canvas.height) {
-            coordinate.y = screen.canvas.height - radius;
+        } else if (coordinate.y + radius > CONTEXT.canvas.height) {
+            coordinate.y = CONTEXT.canvas.height - radius;
         }
 
         return coordinate;
@@ -163,27 +223,27 @@ class Tank {
 
     shoot() {
         if (this.lastShootCount >= this.shootInterval) {
-            game.bullets.push(new Bullet(this.coordinate, this.direction, this.bullet.damage, this.bullet.speed));
+            GAME.bullets.push(new Bullet(this.coordinate, this.direction, this.bullet.damage, this.bullet.speed));
             this.lastShootCount = 0;
-            if (this.type === PLAYER_TANK) {
-                document.getElementById("shoot").play();
+            if (this.type === TANK.PLAYER_TANK) {
+                AUDIO.shoot.play();
             }
         }
     }
 
     draw() {
         switch (this.type) {
-            case PLAYER_TANK:
-                screen.drawImage(image, 32 * (this.direction), 0, 32, 32, this.coordinate.x - 16, this.coordinate.y - 16, 32, 32);
+            case TANK.PLAYER_TANK:
+                CONTEXT.drawImage(IMAGE, 32 * (this.direction), 0, 32, 32, this.coordinate.x - 16, this.coordinate.y - 16, 32, 32);
                 break;
-            case NORMAL_TANK:
-                screen.drawImage(image, 32 * (this.direction), 32, 32, 32, this.coordinate.x - 16, this.coordinate.y - 16, 32, 32);
+            case TANK.NORMAL_TANK:
+                CONTEXT.drawImage(IMAGE, 32 * (this.direction), 32, 32, 32, this.coordinate.x - 16, this.coordinate.y - 16, 32, 32);
                 break;
-            case SWIFT_TANK:
-                screen.drawImage(image, 32 * (4 + this.direction), 32, 32, 32, this.coordinate.x - 16, this.coordinate.y - 16, 32, 32);
+            case TANK.SWIFT_TANK:
+                CONTEXT.drawImage(IMAGE, 32 * (4 + this.direction), 32, 32, 32, this.coordinate.x - 16, this.coordinate.y - 16, 32, 32);
                 break;
-            case HEAVY_TANK:
-                screen.drawImage(image, 32 * (8 + this.direction), 32 * 2, 32, 32, this.coordinate.x - 16, this.coordinate.y - 16, 32, 32);
+            case TANK.HEAVY_TANK:
+                CONTEXT.drawImage(IMAGE, 32 * (8 + this.direction), 32 * 2, 32, 32, this.coordinate.x - 16, this.coordinate.y - 16, 32, 32);
                 break;
             default:
                 break;
@@ -191,22 +251,36 @@ class Tank {
     }
 }
 
-class Bullet {
-    constructor(coordinate, direction, damage, speed) {
+class Bullet implements Entity {
+    canTankPass: boolean;
+    canBulletPass: boolean;
+
+    beAttacked(param: Bullet): void {
+        throw new Error("Method not implemented.");
+    }
+
+    direction: DIRECTION;
+    coordinate: Coordinate;
+    damage: number;
+    alive: boolean;
+    speed: number;
+    radius: number;
+
+    constructor(coordinate: Coordinate, direction: DIRECTION, damage: number, speed: number) {
         this.direction = direction;
         let xOffset = 0;
         let yOffset = 0;
         switch (this.direction) {
-            case UP:
+            case DIRECTION.UP:
                 yOffset = -20;
                 break;
-            case DOWN:
+            case DIRECTION.DOWN:
                 yOffset = 20;
                 break;
-            case LEFT:
+            case DIRECTION.LEFT:
                 xOffset = -20;
                 break;
-            case RIGHT:
+            case DIRECTION.RIGHT:
                 xOffset = 20;
                 break;
             default:
@@ -225,7 +299,7 @@ class Bullet {
     move() {
         if (this.alive) {
             switch (this.direction) {
-                case UP:
+                case DIRECTION.UP:
                     if (this.coordinate.y - this.speed <= 0) {
                         this.coordinate.y = 0;
                         this.explosion();
@@ -234,16 +308,16 @@ class Bullet {
                     }
                     this.coordinate.y -= this.speed;
                     break;
-                case DOWN:
-                    if (this.coordinate.y + this.speed >= screen.canvas.height) {
-                        this.coordinate.y = screen.canvas.height;
+                case DIRECTION.DOWN:
+                    if (this.coordinate.y + this.speed >= CONTEXT.canvas.height) {
+                        this.coordinate.y = CONTEXT.canvas.height;
                         this.explosion();
                     } else {
                         this.checkAllObstacles();
                     }
                     this.coordinate.y += this.speed;
                     break;
-                case LEFT:
+                case DIRECTION.LEFT:
                     if (this.coordinate.x - this.speed <= 0) {
                         this.coordinate.x = 0;
                         this.explosion();
@@ -252,9 +326,9 @@ class Bullet {
                     }
                     this.coordinate.x -= this.speed;
                     break;
-                case RIGHT:
-                    if (this.coordinate.x + this.speed >= screen.canvas.width) {
-                        this.coordinate.x = screen.canvas.width;
+                case DIRECTION.RIGHT:
+                    if (this.coordinate.x + this.speed >= CONTEXT.canvas.width) {
+                        this.coordinate.x = CONTEXT.canvas.width;
                         this.explosion();
                     } else {
                         this.checkAllObstacles();
@@ -270,14 +344,15 @@ class Bullet {
 
     explosion() {
         this.alive = false;
-        game.explosions.push({
+        GAME.explosions.push({
             coordinate: this.coordinate,
-            type: BULLET_EXPLOSION
+            type: EXPLOSION.BULLET_EXPLOSION
         });
     }
 
     checkAllObstacles() {
-        let obstacles = game.tanks.concat(game.buildings);
+        let obstacles: Entity[] = GAME.tanks;
+        obstacles = obstacles.concat(GAME.buildings);
         for (let i = 0; i < obstacles.length; i++) {
             if (obstacles[i].canBulletPass) {
                 continue;
@@ -291,10 +366,10 @@ class Bullet {
     }
 
     draw() {
-        screen.drawImage(image, 6 * (this.direction) + 80, 96, 6, 6, this.coordinate.x - 3, this.coordinate.y - 3, 6, 6);
+        CONTEXT.drawImage(IMAGE, 6 * (this.direction) + 80, 96, 6, 6, this.coordinate.x - 3, this.coordinate.y - 3, 6, 6);
     }
 
-    static isHit(bulletCoordinate, targetCoordinate, targetRadius) {
+    static isHit(bulletCoordinate: Coordinate, targetCoordinate: Coordinate, targetRadius: number) {
         return (bulletCoordinate.x >= targetCoordinate.x - targetRadius)
             && (bulletCoordinate.x <= targetCoordinate.x + targetRadius)
             && (bulletCoordinate.y >= targetCoordinate.y - targetRadius)
@@ -302,50 +377,62 @@ class Bullet {
     }
 }
 
-class Building {
-    constructor(coordinate, type) {
+class Building implements Entity {
+    coordinate: Coordinate;
+    alive: boolean;
+    radius: number;
+    type: BUILDING;
+    destroyLimit: number;
+    canTankPass: boolean;
+    canBulletPass: boolean;
+
+    constructor(coordinate: Coordinate, type: BUILDING) {
         this.coordinate = coordinate;
         this.alive = true;
         this.type = type;
         this.radius = 8;
         switch (this.type) {
-            case BRICK:
-                this.destoryLimit = 2;
+            case BUILDING.BRICK:
+                this.destroyLimit = 2;
                 this.canTankPass = false;
                 this.canBulletPass = false;
                 break;
-            case CEMENT:
-                this.destoryLimit = 6;
+            case BUILDING.CEMENT:
+                this.destroyLimit = 6;
                 this.canTankPass = false;
                 this.canBulletPass = false;
                 break;
-            case TREE:
-                this.destoryLimit = 100;
+            case BUILDING.TREE:
+                this.destroyLimit = 100;
                 this.canTankPass = true;
                 this.canBulletPass = true;
                 break;
-            case WATER:
-                this.destoryLimit = 100;
+            case BUILDING.WATER:
+                this.destroyLimit = 100;
                 this.canTankPass = false;
                 this.canBulletPass = true;
                 break;
             default:
-                this.destoryLimit = 100;
+                this.destroyLimit = 100;
                 this.canTankPass = true;
                 this.canBulletPass = true;
                 break;
         }
     }
 
-    beAttacked(bullet) {
-        if (bullet.damage >= this.destoryLimit) {
+    beAttacked(bullet: Bullet) {
+        if (bullet.damage >= this.destroyLimit) {
             this.alive = false;
         }
     }
 
     draw() {
         if (this.alive) {
-            screen.drawImage(image, 16 * (this.type), 96, 16, 16, this.coordinate.x - 8, this.coordinate.y - 8, 16, 16);
+            CONTEXT.drawImage(IMAGE, 16 * (this.type), 96, 16, 16, this.coordinate.x - 8, this.coordinate.y - 8, 16, 16);
         }
     }
+}
+
+export {
+    Tank, Bullet, Coordinate, Building, Entity
 }
