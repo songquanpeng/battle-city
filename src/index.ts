@@ -413,23 +413,23 @@ let touchPointX = 0;
 let touchPointY = 0;
 
 document.ontouchstart = function (e) {
-  console.log("start: ", e.touches[0].pageX, e.touches[0].pageY);
   touchPointX = e.touches[0].pageX;
   touchPointY = e.touches[0].pageY;
+};
+
+document.ontouchend = function (e) {
+  let endTouchPointX = e.changedTouches[0].pageX;
+  let endTouchPointY = e.changedTouches[0].pageY;
+  let deltaX = Math.abs(endTouchPointX - touchPointX);
+  let deltaY = Math.abs(endTouchPointY - touchPointY);
   if (GAME.tanks[0]) {
     GAME.tanks[0].moving = true;
     GAME.tanks[0].shoot();
   }
-};
-
-document.ontouchend = function (e) {
-  console.log("end: ", e);
-  let endTouchPointX = e.changedTouches[0].pageX;
-  let endTouchPointY = e.changedTouches[0].pageY;
-  if (
-    Math.abs(endTouchPointX - touchPointX) >
-    Math.abs(endTouchPointY - touchPointY)
-  ) {
+  if (Math.max(deltaX, deltaY) < 30) {
+    return;
+  }
+  if (deltaX > deltaY) {
     if (endTouchPointX > touchPointX) {
       GAME.tanks[0].direction = DIRECTION.RIGHT;
     } else {
