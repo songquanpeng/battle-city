@@ -1,5 +1,6 @@
 const path = require("path");
 const HTMLPlugin = require("html-webpack-plugin");
+const CopyPlugin = require("copy-webpack-plugin");
 
 module.exports = {
   entry: "./src/index.ts",
@@ -26,5 +27,6 @@ module.exports = {
       title: "Battle City",
       template: "./src/index.html",
     }),
+    new CopyPlugin([{ from: "./src/static", to: "./static" }]),
   ],
 };
