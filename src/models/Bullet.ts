@@ -1,6 +1,6 @@
 import { AUDIO, DIRECTION, EXPLOSION, IMAGE, TANK } from "../Constants";
 
-import { CONTEXT, GAME } from "../index";
+import { context, GAME } from "../index";
 
 import { Tank } from "./Tank";
 
@@ -72,8 +72,8 @@ class Bullet implements Entity {
           this.coordinate.y -= this.speed;
           break;
         case DIRECTION.DOWN:
-          if (this.coordinate.y + this.speed >= CONTEXT.canvas.height) {
-            this.coordinate.y = CONTEXT.canvas.height;
+          if (this.coordinate.y + this.speed >= context.canvas.height) {
+            this.coordinate.y = context.canvas.height;
             this.explosion();
           } else {
             this.checkAllObstacles();
@@ -90,8 +90,8 @@ class Bullet implements Entity {
           this.coordinate.x -= this.speed;
           break;
         case DIRECTION.RIGHT:
-          if (this.coordinate.x + this.speed >= CONTEXT.canvas.width) {
-            this.coordinate.x = CONTEXT.canvas.width;
+          if (this.coordinate.x + this.speed >= context.canvas.width) {
+            this.coordinate.x = context.canvas.width;
             this.explosion();
           } else {
             this.checkAllObstacles();
@@ -141,7 +141,7 @@ class Bullet implements Entity {
   }
 
   draw() {
-    CONTEXT.drawImage(
+    context.drawImage(
       IMAGE,
       6 * this.direction + 80,
       96,

@@ -20,7 +20,7 @@ import { buildingsGenerator } from "./MapGenerator";
 
 let count = 0;
 let paused = false;
-let CONTEXT: any;
+let context: any;
 
 let keyADown: boolean = false;
 let keyDDown: boolean = false;
@@ -43,9 +43,9 @@ const GAME: {
 };
 
 function main() {
-  CONTEXT = CANVAS.getContext("2d");
-  CONTEXT.canvas.width = window.innerWidth;
-  CONTEXT.canvas.height = window.innerHeight;
+  context = CANVAS.getContext("2d");
+  context.canvas.width = window.innerWidth;
+  context.canvas.height = window.innerHeight;
   buildingsGenerator();
   loadPlayerTank();
   AUDIO.start.play().then(() => {});
@@ -61,7 +61,7 @@ function main() {
 
 function generatePlayTank() {
   let tank = new Tank(
-    { x: CONTEXT.canvas.width / 2, y: CONTEXT.canvas.height },
+    { x: context.canvas.width / 2, y: context.canvas.height },
     DIRECTION.UP,
     TANK.PLAYER_TANK
   );
@@ -75,7 +75,7 @@ function savePlayerTank() {
 function loadPlayerTank() {
   let state = JSON.parse(window.localStorage.getItem("state"));
   let tank = new Tank(
-    { x: CONTEXT.canvas.width / 2, y: CONTEXT.canvas.height },
+    { x: context.canvas.width / 2, y: context.canvas.height },
     DIRECTION.UP,
     TANK.PLAYER_TANK
   );
@@ -97,7 +97,7 @@ function update() {
       GAME.tanks.push(
         new Tank(
           {
-            x: Math.random() * CONTEXT.canvas.width,
+            x: Math.random() * context.canvas.width,
             y: 0,
           },
           DIRECTION.DOWN,
@@ -108,64 +108,64 @@ function update() {
   }
   count += 1;
   count %= 60;
+  function updateBullets() {
+    for (let i = 0; i < GAME.bullets.length; i++) {
+      if (!GAME.bullets[i].alive) {
+        GAME.bullets.splice(i, 1);
+      }
+    }
+    for (let i = 0; i < GAME.bullets.length; i++) {
+      GAME.bullets[i].move();
+    }
+  }
+
+  function updateTanks() {
+    let isPlayerDied = false;
+    for (let i = 0; i < GAME.tanks.length; i++) {
+      if (!GAME.tanks[i].alive) {
+        GAME.explosions.push({
+          coordinate: GAME.tanks[i].coordinate,
+          type: EXPLOSION.TANK_EXPLOSION,
+        });
+        GAME.tanks.splice(i, 1);
+        isPlayerDied = i == 0;
+      }
+    }
+    GAME.tanks[0].move();
+    GAME.tanks[0].lastShootCount += 1;
+    for (let i = 1; i < GAME.tanks.length; i++) {
+      GAME.tanks[i].move();
+      GAME.tanks[i].lastShootCount += 1;
+    }
+    if (count % 5 === 0) {
+      for (let i = 1; i < GAME.tanks.length; i++) {
+        const playerTank = GAME.tanks[0];
+        const enemyTank = GAME.tanks[i];
+        AI(enemyTank, playerTank);
+      }
+    }
+    if (isPlayerDied) {
+      AUDIO.game_over.play().then(() => {
+        generatePlayTank();
+      });
+    }
+  }
+
+  function updateBuildings() {
+    for (let i = 0; i < GAME.buildings.length; i++) {
+      if (!GAME.buildings[i].alive) {
+        GAME.buildings.splice(i, 1);
+      }
+    }
+  }
+
   updateBullets();
   updateBuildings();
   updateTanks();
 }
 
-function updateBullets() {
-  for (let i = 0; i < GAME.bullets.length; i++) {
-    if (!GAME.bullets[i].alive) {
-      GAME.bullets.splice(i, 1);
-    }
-  }
-  for (let i = 0; i < GAME.bullets.length; i++) {
-    GAME.bullets[i].move();
-  }
-}
-
-function updateTanks() {
-  let isPlayerDied = false;
-  for (let i = 0; i < GAME.tanks.length; i++) {
-    if (!GAME.tanks[i].alive) {
-      GAME.explosions.push({
-        coordinate: GAME.tanks[i].coordinate,
-        type: EXPLOSION.TANK_EXPLOSION,
-      });
-      GAME.tanks.splice(i, 1);
-      isPlayerDied = i == 0;
-    }
-  }
-  GAME.tanks[0].move();
-  GAME.tanks[0].lastShootCount += 1;
-  for (let i = 1; i < GAME.tanks.length; i++) {
-    GAME.tanks[i].move();
-    GAME.tanks[i].lastShootCount += 1;
-  }
-  if (count % 5 === 0) {
-    for (let i = 1; i < GAME.tanks.length; i++) {
-      const playerTank = GAME.tanks[0];
-      const enemyTank = GAME.tanks[i];
-      AI(enemyTank, playerTank);
-    }
-  }
-  if (isPlayerDied) {
-    AUDIO.game_over.play().then(() => {
-      generatePlayTank();
-    });
-  }
-}
-
-function updateBuildings() {
-  for (let i = 0; i < GAME.buildings.length; i++) {
-    if (!GAME.buildings[i].alive) {
-      GAME.buildings.splice(i, 1);
-    }
-  }
-}
-
 function draw() {
-  CONTEXT.clearRect(0, 0, CONTEXT.canvas.width, CONTEXT.canvas.height);
+  context.clearRect(0, 0, context.canvas.width, context.canvas.height);
   let objects: Entity[] = GAME.tanks;
   objects = objects.concat(GAME.bullets);
   objects = objects.concat(GAME.buildings);
@@ -175,7 +175,7 @@ function draw() {
   for (let i = 0; i < GAME.explosions.length; i++) {
     const explosion = GAME.explosions[i];
     if (explosion.type === EXPLOSION.TANK_EXPLOSION) {
-      CONTEXT.drawImage(
+      context.drawImage(
         IMAGE,
         320,
         0,
@@ -187,7 +187,7 @@ function draw() {
         32
       );
     } else if (explosion.type === EXPLOSION.BULLET_EXPLOSION) {
-      CONTEXT.drawImage(
+      context.drawImage(
         IMAGE,
         352,
         0,
@@ -205,21 +205,21 @@ function draw() {
 }
 
 function showStatus() {
-  CONTEXT.font = "20px monospace";
-  CONTEXT.fillStyle = "white";
+  context.font = "20px monospace";
+  context.fillStyle = "white";
   let player = GAME.tanks[0];
-  CONTEXT.fillText(
+  context.fillText(
     `blood: ${player.blood.toFixed(1)} armor: ${player.armor.toFixed(2)}`,
     20,
     30
   );
-  CONTEXT.fillText(
+  context.fillText(
     `speed: ${player.speed.toFixed(1)} level: ${player.level}`,
     20,
     50
   );
-  CONTEXT.fillText(`shoot interval: ${player.shootInterval}`, 20, 70);
-  CONTEXT.fillText(
+  context.fillText(`shoot interval: ${player.shootInterval}`, 20, 70);
+  context.fillText(
     `bullet damage: ${player.bullet.damage.toFixed(
       1
     )} bullet speed: ${player.bullet.speed.toFixed(1)}`,
@@ -339,4 +339,4 @@ function registerEvent() {
   };
 }
 
-export { main, GAME, CONTEXT };
+export { main, GAME, context };

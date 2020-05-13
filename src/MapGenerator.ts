@@ -1,11 +1,11 @@
 import { randomChooseFrom } from "./Utils";
 import { BUILDINGS } from "./Constants";
 import { Building } from "./models/Building";
-import { CONTEXT, GAME } from "./index";
+import { context, GAME } from "./index";
 
 function buildingsGenerator() {
-  const xRange = Math.floor(CONTEXT.canvas.width / 16);
-  const yRange = Math.floor(CONTEXT.canvas.height / 16);
+  const xRange = Math.floor(context.canvas.width / 16);
+  const yRange = Math.floor(context.canvas.height / 16);
   for (let i = 0; i < 15 + Math.floor(Math.random() * 10); i++) {
     let buildingType = randomChooseFrom(BUILDINGS);
     let x = Math.floor(Math.random() * xRange);

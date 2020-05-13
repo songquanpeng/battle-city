@@ -1,6 +1,6 @@
 import { AUDIO, DIRECTION, IMAGE, TANK } from "../Constants";
 
-import { GAME, CONTEXT } from "../index";
+import { GAME, context } from "../index";
 
 import { Coordinate, Entity } from "./General";
 
@@ -155,13 +155,13 @@ class Tank implements Entity {
   static bound(coordinate: Coordinate, radius: number) {
     if (coordinate.x < radius) {
       coordinate.x = radius;
-    } else if (coordinate.x + radius > CONTEXT.canvas.width) {
-      coordinate.x = CONTEXT.canvas.width - radius;
+    } else if (coordinate.x + radius > context.canvas.width) {
+      coordinate.x = context.canvas.width - radius;
     }
     if (coordinate.y < radius) {
       coordinate.y = radius;
-    } else if (coordinate.y + radius > CONTEXT.canvas.height) {
-      coordinate.y = CONTEXT.canvas.height - radius;
+    } else if (coordinate.y + radius > context.canvas.height) {
+      coordinate.y = context.canvas.height - radius;
     }
 
     return coordinate;
@@ -188,7 +188,7 @@ class Tank implements Entity {
   draw() {
     switch (this.type) {
       case TANK.PLAYER_TANK:
-        CONTEXT.drawImage(
+        context.drawImage(
           IMAGE,
           32 * this.direction,
           0,
@@ -201,7 +201,7 @@ class Tank implements Entity {
         );
         break;
       case TANK.NORMAL_TANK:
-        CONTEXT.drawImage(
+        context.drawImage(
           IMAGE,
           32 * this.direction,
           32,
@@ -214,7 +214,7 @@ class Tank implements Entity {
         );
         break;
       case TANK.SWIFT_TANK:
-        CONTEXT.drawImage(
+        context.drawImage(
           IMAGE,
           32 * (4 + this.direction),
           32,
@@ -227,7 +227,7 @@ class Tank implements Entity {
         );
         break;
       case TANK.HEAVY_TANK:
-        CONTEXT.drawImage(
+        context.drawImage(
           IMAGE,
           32 * (8 + this.direction),
           32 * 2,

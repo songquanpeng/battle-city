@@ -1,6 +1,6 @@
 import { BUILDING, IMAGE } from "../Constants";
 
-import { CONTEXT } from "../index";
+import { context } from "../index";
 
 import { Coordinate, Entity } from "./General";
 
@@ -57,7 +57,7 @@ class Building implements Entity {
 
   draw() {
     if (this.alive) {
-      CONTEXT.drawImage(
+      context.drawImage(
         IMAGE,
         16 * this.type,
         96,
