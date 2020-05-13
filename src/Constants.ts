@@ -62,6 +62,9 @@ class AudioManager {
   pause = <HTMLAudioElement>document.getElementById("pause");
   pick = <HTMLAudioElement>document.getElementById("pick");
   level_up = <HTMLAudioElement>document.getElementById("level_up");
+  idle = <HTMLAudioElement>document.getElementById("idle");
+  move = <HTMLAudioElement>document.getElementById("move");
+  hit = <HTMLAudioElement>document.getElementById("hit");
   game_over = <HTMLAudioElement>document.getElementById("game_over");
 }
 

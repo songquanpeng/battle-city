@@ -18,6 +18,7 @@ import { Building } from "./models/Building";
 import { Entity } from "./models/Utils";
 
 let count = 0;
+let paused = false;
 let CONTEXT: any;
 
 const GAME: {
@@ -81,6 +82,7 @@ function loadPlayerTank() {
 }
 
 function update() {
+  if (paused) return;
   if (count === 0) {
     if (Math.random() > 0.7) {
       GAME.tanks.push(
@@ -271,12 +273,12 @@ function showStatus() {
   CONTEXT.fillStyle = "white";
   let player = GAME.tanks[0];
   CONTEXT.fillText(
-    `blood: ${player.blood.toFixed(1)}\narmor: ${player.armor.toFixed(2)}`,
+    `blood: ${player.blood.toFixed(1)} armor: ${player.armor.toFixed(2)}`,
     20,
     30
   );
   CONTEXT.fillText(
-    `speed: ${player.speed.toFixed(1)}\nlevel: ${player.level}`,
+    `speed: ${player.speed.toFixed(1)} level: ${player.level}`,
     20,
     50
   );
@@ -284,7 +286,7 @@ function showStatus() {
   CONTEXT.fillText(
     `bullet damage: ${player.bullet.damage.toFixed(
       1
-    )}\nbullet speed: ${player.bullet.speed.toFixed(1)}`,
+    )} bullet speed: ${player.bullet.speed.toFixed(1)}`,
     20,
     90
   );
@@ -317,6 +319,10 @@ document.onkeydown = function (e) {
         keySDown = true;
         GAME.tanks[0].moving = true;
         GAME.tanks[0].direction = DIRECTION.DOWN;
+        break;
+      case "KeyP":
+        paused = !paused;
+        AUDIO.pause.play().then(() => {});
         break;
       case "Space":
         GAME.tanks[0].shoot();

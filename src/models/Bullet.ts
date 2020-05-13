@@ -1,6 +1,6 @@
-import { DIRECTION, EXPLOSION, IMAGE } from "../Constants";
+import { AUDIO, DIRECTION, EXPLOSION, IMAGE, TANK } from "../Constants";
 
-import { GAME, CONTEXT } from "../index";
+import { CONTEXT, GAME } from "../index";
 
 import { Tank } from "./Tank";
 
@@ -111,6 +111,9 @@ class Bullet implements Entity {
       coordinate: this.coordinate,
       type: EXPLOSION.BULLET_EXPLOSION,
     });
+    if (this.shooter.type == TANK.PLAYER_TANK) {
+      // AUDIO.hit.play().then(() => {});
+    }
   }
 
   checkAllObstacles() {
