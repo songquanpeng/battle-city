@@ -124,81 +124,43 @@ class Tank implements Entity {
     }
 
     move() {
+        let offset: number = 2;
         if (this.moving) {
             let overlapping = false;
             let obstacles: Entity[] = GAME.tanks;
             obstacles = obstacles.concat(GAME.buildings);
+            let xDelta = 0;
+            let yDelta = 0;
             switch (this.direction) {
                 case DIRECTION.UP:
-                    for (let i = 0; i < obstacles.length; i++) {
-                        if (obstacles[i].canTankPass) {
-                            continue;
-                        }
-                        if (this.coordinate.y - this.radius < obstacles[i].coordinate.y + obstacles[i].radius
-                            && this.coordinate.y - this.radius > obstacles[i].coordinate.y - obstacles[i].radius
-                            && this.coordinate !== obstacles[i].coordinate
-                            && Math.abs(this.coordinate.x - obstacles[i].coordinate.x) < this.radius + obstacles[i].radius) {
-                            overlapping = true;
-                            break;
-                        }
-                    }
-                    if (!overlapping) {
-                        this.coordinate.y -= this.speed;
-                    }
+                    yDelta = -this.speed;
                     break;
                 case DIRECTION.DOWN:
-                    for (let i = 0; i < obstacles.length; i++) {
-                        if (obstacles[i].canTankPass) {
-                            continue;
-                        }
-                        if (this.coordinate.y + this.radius < obstacles[i].coordinate.y + obstacles[i].radius
-                            && this.coordinate.y + this.radius > obstacles[i].coordinate.y - obstacles[i].radius
-                            && this.coordinate !== obstacles[i].coordinate
-                            && Math.abs(this.coordinate.x - obstacles[i].coordinate.x) < this.radius + obstacles[i].radius) {
-                            overlapping = true;
-                            break;
-                        }
-                    }
-                    if (!overlapping) {
-                        this.coordinate.y += this.speed;
-                    }
+                    yDelta = this.speed;
                     break;
                 case DIRECTION.LEFT:
-                    for (let i = 0; i < obstacles.length; i++) {
-                        if (obstacles[i].canTankPass) {
-                            continue;
-                        }
-                        if (this.coordinate.x - this.radius < obstacles[i].coordinate.x + obstacles[i].radius
-                            && this.coordinate.x - this.radius > obstacles[i].coordinate.x - obstacles[i].radius
-                            && this.coordinate !== obstacles[i].coordinate
-                            && Math.abs(this.coordinate.y - obstacles[i].coordinate.y) < this.radius + obstacles[i].radius) {
-                            overlapping = true;
-                            break;
-                        }
-                    }
-                    if (!overlapping) {
-                        this.coordinate.x -= this.speed;
-                    }
+                    xDelta = -this.speed;
                     break;
                 case DIRECTION.RIGHT:
-                    for (let i = 0; i < obstacles.length; i++) {
-                        if (obstacles[i].canTankPass) {
-                            continue;
-                        }
-                        if (this.coordinate.x + this.radius < obstacles[i].coordinate.x + obstacles[i].radius
-                            && this.coordinate.x + this.radius > obstacles[i].coordinate.x - obstacles[i].radius
-                            && this.coordinate !== obstacles[i].coordinate
-                            && Math.abs(this.coordinate.y - obstacles[i].coordinate.y) < this.radius + obstacles[i].radius) {
-                            overlapping = true;
-                            break;
-                        }
-                    }
-                    if (!overlapping) {
-                        this.coordinate.x += this.speed;
-                    }
+                    xDelta = this.speed;
                     break;
                 default:
                     break;
+            }
+            this.coordinate.x += xDelta;
+            this.coordinate.y += yDelta;
+            for (let i = 0; i < obstacles.length; i++) {
+                if (obstacles[i].canTankPass) {
+                    continue;
+                }
+                if (Math.abs(this.coordinate.y - obstacles[i].coordinate.y) < this.radius + obstacles[i].radius - offset
+                    && this.coordinate !== obstacles[i].coordinate
+                    && Math.abs(this.coordinate.x - obstacles[i].coordinate.x) < this.radius + obstacles[i].radius - offset) {
+                    overlapping = true;
+                    this.coordinate.x -= xDelta;
+                    this.coordinate.y -= yDelta;
+                    break;
+                }
             }
 
             this.coordinate = Tank.bound(this.coordinate, this.radius); // Make the tank unable to cross the border
@@ -403,7 +365,7 @@ class Building implements Entity {
                 this.canBulletPass = false;
                 break;
             case BUILDING.TREE:
-                this.destroyLimit = 100;
+                this.destroyLimit = 1;
                 this.canTankPass = true;
                 this.canBulletPass = true;
                 break;
