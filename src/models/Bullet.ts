@@ -111,9 +111,6 @@ class Bullet implements Entity {
       coordinate: this.coordinate,
       type: EXPLOSION.BULLET_EXPLOSION,
     });
-    if (this.shooter.type == TANK.PLAYER_TANK) {
-      // AUDIO.hit.play().then(() => {});
-    }
   }
 
   checkAllObstacles() {
@@ -132,6 +129,12 @@ class Bullet implements Entity {
       ) {
         this.explosion();
         obstacles[i].beAttacked(this, this.shooter);
+        if (
+          this.shooter.type == TANK.PLAYER_TANK &&
+          obstacles[i] instanceof Tank
+        ) {
+          AUDIO.hit.play().then(() => {});
+        }
         break;
       }
     }
