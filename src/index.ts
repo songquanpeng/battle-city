@@ -40,6 +40,7 @@ function main() {
   buildingsGenerator();
   loadPlayerTank();
   AUDIO.start.play().then(() => {});
+
   function tick() {
     update();
     draw();
@@ -407,5 +408,40 @@ function buildingsGenerator() {
     }
   }
 }
+
+let touchPointX = 0;
+let touchPointY = 0;
+
+document.ontouchstart = function (e) {
+  console.log("start: ", e.touches[0].pageX, e.touches[0].pageY);
+  touchPointX = e.touches[0].pageX;
+  touchPointY = e.touches[0].pageY;
+  if (GAME.tanks[0]) {
+    GAME.tanks[0].moving = true;
+    GAME.tanks[0].shoot();
+  }
+};
+
+document.ontouchend = function (e) {
+  console.log("end: ", e);
+  let endTouchPointX = e.changedTouches[0].pageX;
+  let endTouchPointY = e.changedTouches[0].pageY;
+  if (
+    Math.abs(endTouchPointX - touchPointX) >
+    Math.abs(endTouchPointY - touchPointY)
+  ) {
+    if (endTouchPointX > touchPointX) {
+      GAME.tanks[0].direction = DIRECTION.RIGHT;
+    } else {
+      GAME.tanks[0].direction = DIRECTION.LEFT;
+    }
+  } else {
+    if (endTouchPointY > touchPointY) {
+      GAME.tanks[0].direction = DIRECTION.DOWN;
+    } else {
+      GAME.tanks[0].direction = DIRECTION.UP;
+    }
+  }
+};
 
 export { main, GAME, CONTEXT };

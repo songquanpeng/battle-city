@@ -19,3 +19,4 @@
 ## TODO List
 - [ ] Mode selection page.
 - [ ] PvP mode.
+- [x] Support touch screen devices.

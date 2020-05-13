@@ -57,7 +57,7 @@
     <canvas id="canvas" width="500" height="500" style="margin: 0 auto;display: none;background-color: black"></canvas>
 </div>
 <div id="prompt">
-    <h1>Press any key ...</h1>
+    <h1 onclick="startGame()">Press any key or touch here...</h1>
     <p>Notice: your tank's state is saved in the local storage.</p>
     <p>F11: enter fullscreen mode</p>
     <p>WASD: move P: pause R: change map</p>
@@ -67,6 +67,10 @@
 <script>
     let gameStarted = false;
     onkeypress = function () {
+        startGame();
+    };
+
+    function startGame() {
         if (!gameStarted) {
             document.getElementById("prompt").style.display = "none";
             document.getElementById("canvas").style.display = "block";
