@@ -163,7 +163,6 @@ function draw() {
     let objects: Entity[] = GAME.tanks;
     objects = objects.concat(GAME.bullets);
     objects = objects.concat(GAME.buildings);
-    console.log(GAME.tanks.length === objects.length);
     for (let i = 0; i < objects.length; i++) {
         objects[i].draw();
     }

@@ -27,6 +27,12 @@ module.exports = {
       title: "Battle City",
       template: "./src/index.html",
     }),
-    new CopyPlugin([{ from: "./src/static", to: "./static" }]),
+    new CopyPlugin([
+      { from: "./src/static", to: "./static" },
+      {
+        from: "./src/favicon.ico",
+        to: "./",
+      },
+    ]),
   ],
 };

@@ -31,11 +31,14 @@ class AudioManager {
     collect = <HTMLAudioElement>document.getElementById("collect");
     shoot = <HTMLAudioElement>document.getElementById("shoot");
     explosion = <HTMLAudioElement>document.getElementById("explosion");
+    pause = <HTMLAudioElement>document.getElementById("pause");
+    pick = <HTMLAudioElement>document.getElementById("pick");
+    level_up = <HTMLAudioElement>document.getElementById("level_up");
 }
 
 const AUDIO = new AudioManager();
 const CANVAS = <HTMLCanvasElement>document.getElementById('canvas');
-const IMAGE = <HTMLImageElement>document.getElementById('image');
+const IMAGE = <HTMLImageElement>document.getElementById('sprites');
 
 export {
     TANK, ENEMY_TANKS, DIRECTION, EXPLOSION, BUILDING, BUILDINGS, ACTION, ACTIONS, AUDIO, CANVAS, IMAGE
