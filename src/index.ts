@@ -193,9 +193,9 @@ function showStatus() {
     CONTEXT.font = "20px monospace";
     CONTEXT.fillStyle = "white";
     let player = GAME.tanks[0];
-    CONTEXT.fillText(`blood: ${player.blood.toFixed(1)}\narmor: ${player.armor}`, 20, 30);
-    CONTEXT.fillText(`speed: ${player.speed}\nlevel: ${player.bullet.damage}`, 20, 50);
-    CONTEXT.fillText(`bullet damage: ${player.bullet.damage}\nbullet speed: ${player.bullet.speed}`, 20, 70);
+    CONTEXT.fillText(`blood: ${player.blood.toFixed(1)}\narmor: ${player.armor.toFixed(2)}`, 20, 30);
+    CONTEXT.fillText(`speed: ${player.speed.toFixed(1)}\nlevel: ${player.level}`, 20, 50);
+    CONTEXT.fillText(`bullet damage: ${player.bullet.damage.toFixed(1)}\nbullet speed: ${player.bullet.speed.toFixed(1)}`, 20, 70);
 }
 
 let keyADown: boolean = false;

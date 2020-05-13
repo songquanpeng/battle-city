@@ -34,7 +34,9 @@ interface Entity {
 
     draw(): void;
 
-    beAttacked(param: Bullet): void;
+    beAttacked(param: Bullet, attacker: Entity): void;
+
+    levelUp(): void;
 }
 
 class Tank implements Entity {
@@ -54,6 +56,7 @@ class Tank implements Entity {
     armor: number;
     speed: number;
     attackInterval: number;
+    level: number;
 
     constructor(coordinate: Coordinate, direction: DIRECTION, type: TANK) {
         this.coordinate = coordinate;
@@ -75,6 +78,7 @@ class Tank implements Entity {
         this.armor = 0.5;
         this.speed = 2.5;
         this.attackInterval = 40;
+        this.level = 1;
         switch (this.type) {
             case TANK.PLAYER_TANK:
                 this.blood = 10;
@@ -103,7 +107,7 @@ class Tank implements Entity {
             case TANK.HEAVY_TANK:
                 this.blood = 20;
                 this.armor = 0.7;
-                this.speed = 1;
+                this.speed = 0.7;
                 this.attackInterval = 60;
                 this.bullet.damage = 7;
                 this.bullet.speed = 7;
@@ -114,12 +118,22 @@ class Tank implements Entity {
         }
     }
 
-    beAttacked(bullet: { damage: number; }) {
-        this.blood -= bullet.damage * this.armor;
+    levelUp(): void {
+        this.level++;
+        this.blood += 2;
+        this.speed += 0.2;
+        this.armor += 0.04;
+        this.bullet.speed += 1;
+        this.bullet.damage += 1;
+    }
+
+    beAttacked(bullet: { damage: number; }, attacker: Entity) {
+        this.blood -= Math.max(1, bullet.damage * (1 - this.armor));
         if (this.blood <= 0) {
             this.blood = 0;
             this.alive = false;
             AUDIO.explosion.play();
+            attacker.levelUp();
         }
     }
 
@@ -185,7 +199,7 @@ class Tank implements Entity {
 
     shoot() {
         if (this.lastShootCount >= this.shootInterval) {
-            GAME.bullets.push(new Bullet(this.coordinate, this.direction, this.bullet.damage, this.bullet.speed));
+            GAME.bullets.push(new Bullet(this.coordinate, this.direction, this.bullet.damage, this.bullet.speed, this));
             this.lastShootCount = 0;
             if (this.type === TANK.PLAYER_TANK) {
                 AUDIO.shoot.play();
@@ -216,8 +230,9 @@ class Tank implements Entity {
 class Bullet implements Entity {
     canTankPass: boolean;
     canBulletPass: boolean;
+    shooter: Tank;
 
-    beAttacked(param: Bullet): void {
+    beAttacked(param: Bullet, attacker: Entity): void {
         throw new Error("Method not implemented.");
     }
 
@@ -228,8 +243,9 @@ class Bullet implements Entity {
     speed: number;
     radius: number;
 
-    constructor(coordinate: Coordinate, direction: DIRECTION, damage: number, speed: number) {
+    constructor(coordinate: Coordinate, direction: DIRECTION, damage: number, speed: number, shooter: Tank) {
         this.direction = direction;
+        this.shooter = shooter;
         let xOffset = 0;
         let yOffset = 0;
         switch (this.direction) {
@@ -321,7 +337,7 @@ class Bullet implements Entity {
             }
             if (Bullet.isHit(this.coordinate, obstacles[i].coordinate, obstacles[i].radius)) {
                 this.explosion();
-                obstacles[i].beAttacked(this);
+                obstacles[i].beAttacked(this, this.shooter);
                 break;
             }
         }
@@ -336,6 +352,9 @@ class Bullet implements Entity {
             && (bulletCoordinate.x <= targetCoordinate.x + targetRadius)
             && (bulletCoordinate.y >= targetCoordinate.y - targetRadius)
             && (bulletCoordinate.y <= targetCoordinate.y + targetRadius)
+    }
+
+    levelUp(): void {
     }
 }
 
@@ -382,7 +401,7 @@ class Building implements Entity {
         }
     }
 
-    beAttacked(bullet: Bullet) {
+    beAttacked(bullet: Bullet, attacker: Entity) {
         if (bullet.damage >= this.destroyLimit) {
             this.alive = false;
         }
@@ -392,6 +411,10 @@ class Building implements Entity {
         if (this.alive) {
             CONTEXT.drawImage(IMAGE, 16 * (this.type), 96, 16, 16, this.coordinate.x - 8, this.coordinate.y - 8, 16, 16);
         }
+    }
+
+    levelUp(): void {
+
     }
 }
 
