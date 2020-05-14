@@ -36,7 +36,7 @@ function buildingsGenerator() {
     { x: rowNum - i, y: colNum - i }
   );
   generateLine(
-    BUILDING.CEMENT,
+    BUILDING.STEEL,
     { x: i, y: colNum - i },
     { x: rowNum - i, y: i }
   );

@@ -1,10 +1,18 @@
-import { AUDIO, DIRECTION, EXPLOSION, IMAGE, TANK } from "../Constants";
+import {
+  AUDIO,
+  BULLET_RADIUS,
+  DIRECTION,
+  EXPLOSION,
+  IMAGE,
+  TANK,
+} from "../Constants";
 
 import { context, GAME } from "../index";
 
 import { Tank } from "./Tank";
 
 import { Coordinate, Entity } from "./General";
+import { drawEntity } from "../Utils";
 
 class Bullet implements Entity {
   canTankPass: boolean;
@@ -54,7 +62,7 @@ class Bullet implements Entity {
     this.damage = damage;
     this.alive = true;
     this.speed = speed;
-    this.radius = 1;
+    this.radius = BULLET_RADIUS;
   }
 
   move() {
@@ -115,7 +123,7 @@ class Bullet implements Entity {
     let obstacles: Entity[] = GAME.tanks;
     obstacles = obstacles.concat(GAME.buildings);
     for (let i = 0; i < obstacles.length; i++) {
-      if (obstacles[i].canBulletPass) {
+      if (obstacles[i].canBulletPass || obstacles[i] == this.shooter) {
         continue;
       }
       if (
@@ -140,17 +148,7 @@ class Bullet implements Entity {
   }
 
   draw() {
-    context.drawImage(
-      IMAGE,
-      6 * this.direction + 80,
-      96,
-      6,
-      6,
-      this.coordinate.x - 3,
-      this.coordinate.y - 3,
-      6,
-      6
-    );
+    drawEntity(this);
   }
 
   beAttacked(param: Bullet, attacker: Entity): void {

@@ -1,6 +1,6 @@
-import { AUDIO, DIRECTION, IMAGE, TANK } from "../Constants";
+import { AUDIO, DIRECTION, IMAGE, TANK, TANK_RADIUS } from "../Constants";
 
-import { GAME, context } from "../index";
+import { context, GAME } from "../index";
 
 import { Coordinate, Entity } from "./General";
 
@@ -15,6 +15,7 @@ class Tank implements Entity {
   shootInterval: number;
   alive: boolean;
   moving: boolean;
+  imageTurn: boolean;
   canTankPass: boolean;
   canBulletPass: boolean;
   actionList: any[];
@@ -30,10 +31,11 @@ class Tank implements Entity {
     this.direction = direction;
     this.lastShootCount = 0;
     this.type = type;
-    this.radius = 16;
+    this.radius = TANK_RADIUS;
     this.shootInterval = 60;
     this.alive = true;
     this.moving = true;
+    this.imageTurn = true;
     this.canTankPass = false;
     this.canBulletPass = false;
     this.actionList = [];

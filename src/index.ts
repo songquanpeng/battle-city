@@ -14,7 +14,7 @@ import { Building } from "./models/Building";
 
 import { Entity } from "./models/General";
 import { AI } from "./AI";
-import { randomChooseFrom } from "./Utils";
+import { randomChooseFrom, drawEntity, drawExplosion } from "./Utils";
 import { buildingsGenerator } from "./MapGenerator";
 
 let count = 0;
@@ -171,35 +171,11 @@ function draw() {
   objects = objects.concat(GAME.bullets);
   objects = objects.concat(GAME.buildings);
   for (let i = 0; i < objects.length; i++) {
-    objects[i].draw();
+    drawEntity(objects[i]);
   }
   for (let i = 0; i < GAME.explosions.length; i++) {
     const explosion = GAME.explosions[i];
-    if (explosion.type === EXPLOSION.TANK_EXPLOSION) {
-      context.drawImage(
-        IMAGE,
-        320,
-        0,
-        32,
-        32,
-        explosion.coordinate.x - 16,
-        explosion.coordinate.y - 16,
-        32,
-        32
-      );
-    } else if (explosion.type === EXPLOSION.BULLET_EXPLOSION) {
-      context.drawImage(
-        IMAGE,
-        352,
-        0,
-        32,
-        32,
-        explosion.coordinate.x - 16,
-        explosion.coordinate.y - 16,
-        32,
-        32
-      );
-    }
+    drawExplosion(explosion.type, explosion.coordinate);
   }
   showStatus();
   GAME.explosions = [];

@@ -1,4 +1,4 @@
-import { BUILDING, IMAGE } from "../Constants";
+import { BUILDING, BUILDING_RADIUS, IMAGE } from "../Constants";
 
 import { context } from "../index";
 
@@ -19,19 +19,19 @@ class Building implements Entity {
     this.coordinate = coordinate;
     this.alive = true;
     this.type = type;
-    this.radius = 8;
+    this.radius = BUILDING_RADIUS;
     switch (this.type) {
       case BUILDING.BRICK:
         this.destroyLimit = 10;
         this.canTankPass = false;
         this.canBulletPass = false;
         break;
-      case BUILDING.CEMENT:
+      case BUILDING.STEEL:
         this.destroyLimit = 20;
         this.canTankPass = false;
         this.canBulletPass = false;
         break;
-      case BUILDING.TREE:
+      case BUILDING.JUNGLE:
         this.destroyLimit = 100;
         this.canTankPass = true;
         this.canBulletPass = true;
