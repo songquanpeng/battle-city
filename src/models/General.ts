@@ -15,6 +15,7 @@ interface Entity {
   radius: number;
   canTankPass: boolean;
   canBulletPass: boolean;
+  type: any;
 
   draw(): void;
 

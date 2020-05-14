@@ -18,13 +18,18 @@ function buildingsGenerator() {
     }
     map.push(temp);
   }
-  // TODO
   let i = 10;
-  // generateBlock(
-  //   BUILDING.BRICK,
-  //   { x: i, y: i },
-  //   { x: rowNum - i, y: colNum - i }
-  // );
+  let j = i - 4;
+  generateBlock(
+    BUILDING.BRICK,
+    { x: i, y: i },
+    { x: rowNum - i, y: colNum - i }
+  );
+  generateBlock(
+    BUILDING.BRICK,
+    { x: j, y: j },
+    { x: rowNum - j, y: colNum - j }
+  );
   generateLine(
     BUILDING.BRICK,
     { x: i, y: i },
@@ -72,14 +77,38 @@ function generateLine(
   startPoint: Coordinate,
   endPoint: Coordinate
 ) {
-  for (let startX = startPoint.x; startX <= endPoint.x; startX++) {
-    let x = safeX(startX);
-    let y =
-      startPoint.y +
-      (endPoint.y - startPoint.y) *
-        ((startX - startPoint.x) / (endPoint.x - startPoint.x));
-    y = safeY(y);
-    map[x][y] = buildingType;
+  if (
+    Math.abs(startPoint.x - endPoint.x) > Math.abs(startPoint.y - endPoint.y)
+  ) {
+    if (startPoint.x > endPoint.x) {
+      let temp = endPoint;
+      endPoint = startPoint;
+      startPoint = temp;
+    }
+    for (let startX = startPoint.x; startX <= endPoint.x; startX++) {
+      let x = safeX(startX);
+      let y =
+        startPoint.y +
+        (endPoint.y - startPoint.y) *
+          ((startX - startPoint.x) / (endPoint.x - startPoint.x));
+      y = safeY(y);
+      map[x][y] = buildingType;
+    }
+  } else {
+    if (startPoint.y > endPoint.y) {
+      let temp = endPoint;
+      endPoint = startPoint;
+      startPoint = temp;
+    }
+    for (let startY = startPoint.y; startY <= endPoint.y; startY++) {
+      let y = safeY(startY);
+      let x =
+        startPoint.x +
+        (endPoint.x - startPoint.x) *
+          ((startY - startPoint.y) / (endPoint.y - startPoint.y));
+      x = safeX(x);
+      map[x][y] = buildingType;
+    }
   }
 }
 

@@ -62,6 +62,7 @@ class AudioManager {
   idle = <HTMLAudioElement>document.getElementById("idle");
   move = <HTMLAudioElement>document.getElementById("move");
   hit = <HTMLAudioElement>document.getElementById("hit");
+  be_hit = <HTMLAudioElement>document.getElementById("be_hit");
   game_over = <HTMLAudioElement>document.getElementById("game_over");
 }
 

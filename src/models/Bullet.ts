@@ -10,17 +10,13 @@ class Bullet implements Entity {
   canTankPass: boolean;
   canBulletPass: boolean;
   shooter: Tank;
-
-  beAttacked(param: Bullet, attacker: Entity): void {
-    throw new Error("Method not implemented.");
-  }
-
   direction: DIRECTION;
   coordinate: Coordinate;
   damage: number;
   alive: boolean;
   speed: number;
   radius: number;
+  type: any;
 
   constructor(
     coordinate: Coordinate,
@@ -131,11 +127,12 @@ class Bullet implements Entity {
       ) {
         this.explosion();
         obstacles[i].beAttacked(this, this.shooter);
-        if (
-          this.shooter.type == TANK.PLAYER_TANK &&
-          obstacles[i] instanceof Tank
-        ) {
-          AUDIO.hit.play().then(() => {});
+        if (obstacles[i] instanceof Tank) {
+          if (this.shooter.type == TANK.PLAYER_TANK) {
+            AUDIO.hit.play().then(() => {});
+          } else if (obstacles[i].type == TANK.PLAYER_TANK) {
+            AUDIO.be_hit.play().then(() => {});
+          }
         }
         break;
       }
@@ -154,6 +151,10 @@ class Bullet implements Entity {
       6,
       6
     );
+  }
+
+  beAttacked(param: Bullet, attacker: Entity): void {
+    throw new Error("Method not implemented.");
   }
 
   static isHit(
