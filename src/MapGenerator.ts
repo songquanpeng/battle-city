@@ -2,6 +2,7 @@ import { BUILDING } from "./Constants";
 import { Building } from "./models/Building";
 import { context, GAME } from "./index";
 import { Coordinate } from "./models/General";
+import { randomNumber } from "./Utils";
 
 const map: BUILDING[][] = [];
 let rowNum: number;
@@ -18,28 +19,7 @@ function buildingsGenerator() {
     }
     map.push(temp);
   }
-  let i = 10;
-  let j = i - 4;
-  generateBlock(
-    BUILDING.BRICK,
-    { x: i, y: i },
-    { x: rowNum - i, y: colNum - i }
-  );
-  generateBlock(
-    BUILDING.BRICK,
-    { x: j, y: j },
-    { x: rowNum - j, y: colNum - j }
-  );
-  generateLine(
-    BUILDING.BRICK,
-    { x: i, y: i },
-    { x: rowNum - i, y: colNum - i }
-  );
-  generateLine(
-    BUILDING.STEEL,
-    { x: i, y: colNum - i },
-    { x: rowNum - i, y: i }
-  );
+  generateMap();
   // fill map with generated buildings
   for (let row = 0; row < rowNum; row++) {
     for (let col = 0; col < colNum; col++) {
@@ -57,6 +37,36 @@ function buildingsGenerator() {
       }
     }
   }
+}
+
+function generateMap() {
+  let i = randomNumber(8, 12);
+  let j = randomNumber(12, 18);
+  generateBlock(
+    BUILDING.STEEL,
+    { x: i, y: i },
+    { x: (rowNum - i) / 2, y: (colNum - i) / 2 }
+  );
+  generateBlock(
+    BUILDING.STEEL,
+    { x: j + rowNum / 2, y: j },
+    { x: rowNum - j, y: colNum - j }
+  );
+  generateBlock(
+    BUILDING.STEEL,
+    { x: j, y: rowNum / 2 - j },
+    { x: j + 5, y: rowNum / 2 - j + 4 }
+  );
+  generateLine(
+    BUILDING.BRICK,
+    { x: i, y: i },
+    { x: rowNum - i, y: colNum - i }
+  );
+  generateLine(
+    BUILDING.BRICK,
+    { x: i, y: colNum - i },
+    { x: rowNum - i, y: i }
+  );
 }
 
 function generateBlock(
