@@ -76,4 +76,4 @@ function drawExplosion(type: EXPLOSION, coordinate: Coordinate) {
   );
 }
 
-export { randomChooseFrom, drawEntity, drawExplosion };
+export { randomChooseFrom, randomNumber, drawEntity, drawExplosion };

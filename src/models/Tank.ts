@@ -25,8 +25,20 @@ class Tank implements Entity {
   speed: number;
   attackInterval: number;
   level: number;
-
-  constructor(coordinate: Coordinate, direction: DIRECTION, type: TANK) {
+  basic: {
+    blood: number;
+    armor: number;
+    speed: number;
+    attackInterval: number;
+    bulletDamage: number;
+    bulletSpeed: number;
+  };
+  constructor(
+    coordinate: Coordinate,
+    direction: DIRECTION,
+    type: TANK,
+    level = 1
+  ) {
     this.coordinate = coordinate;
     this.direction = direction;
     this.lastShootCount = 0;
@@ -47,54 +59,87 @@ class Tank implements Entity {
     this.armor = 0.5;
     this.speed = 2.5;
     this.attackInterval = 40;
-    this.level = 1;
+    this.level = level;
     switch (this.type) {
       case TANK.PLAYER_TANK:
-        this.blood = 10;
-        this.armor = 0.6;
-        this.speed = 3;
-        this.attackInterval = 20;
-        this.bullet.damage = 5;
-        this.bullet.speed = 15;
+        this.basic = {
+          blood: 10,
+          armor: 0.5,
+          speed: 2.5,
+          attackInterval: 45,
+          bulletDamage: 5,
+          bulletSpeed: 15,
+        };
         break;
       case TANK.NORMAL_TANK:
-        this.blood = 10;
-        this.armor = 0.5;
-        this.speed = 2.5;
-        this.attackInterval = 40;
-        this.bullet.damage = 4;
-        this.bullet.speed = 10;
+        this.basic = {
+          blood: 10,
+          armor: 0.5,
+          speed: 2.5,
+          attackInterval: 45,
+          bulletDamage: 4,
+          bulletSpeed: 10,
+        };
         break;
       case TANK.SWIFT_TANK:
-        this.blood = 5;
-        this.armor = 0.3;
-        this.speed = 3.5;
-        this.attackInterval = 20;
-        this.bullet.damage = 3;
-        this.bullet.speed = 15;
+        this.basic = {
+          blood: 6,
+          armor: 0.35,
+          speed: 3.5,
+          attackInterval: 30,
+          bulletDamage: 5,
+          bulletSpeed: 15,
+        };
         break;
       case TANK.HEAVY_TANK:
-        this.blood = 20;
-        this.armor = 0.7;
-        this.speed = 0.7;
-        this.attackInterval = 60;
-        this.bullet.damage = 10;
-        this.bullet.speed = 4;
+        this.basic = {
+          blood: 20,
+          armor: 0.7,
+          speed: 0.7,
+          attackInterval: 60,
+          bulletDamage: 10,
+          bulletSpeed: 4,
+        };
         break;
       default:
+        this.basic = {
+          blood: 10,
+          armor: 0.6,
+          speed: 3,
+          attackInterval: 20,
+          bulletDamage: 5,
+          bulletSpeed: 15,
+        };
         console.error("Unexpected tank type: " + this.type);
         break;
     }
+    this.calculateAttributes();
+  }
+
+  calculateAttributes(): void {
+    this.blood = Math.min(this.basic.blood + 25, this.basic.blood + this.level);
+    this.speed = Math.min(
+      this.basic.speed + 8,
+      this.basic.speed + this.level * 0.1
+    );
+    this.armor = Math.min(0.8, this.basic.armor + this.level * 0.04);
+    this.bullet.speed = Math.min(
+      this.basic.speed + 15,
+      this.basic.bulletSpeed + this.level * 0.1
+    );
+    this.bullet.damage = Math.min(
+      this.basic.bulletDamage + 25,
+      this.basic.bulletDamage + this.level * 0.3
+    );
+    this.shootInterval = Math.max(
+      this.basic.attackInterval - 20,
+      this.basic.attackInterval - this.level
+    );
   }
 
   levelUp(): void {
     this.level++;
-    this.blood = Math.min(30, this.blood + 1);
-    this.speed = Math.min(10, this.speed + 0.1);
-    this.armor = Math.min(0.8, this.armor + 0.04);
-    this.bullet.speed = Math.min(25, this.bullet.speed + 0.25);
-    this.bullet.damage = Math.min(30, this.bullet.damage + 0.5);
-    this.shootInterval = Math.max(10, this.shootInterval - 2);
+    this.calculateAttributes();
   }
 
   beAttacked(bullet: { damage: number }, attacker: Entity) {

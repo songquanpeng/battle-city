@@ -14,7 +14,12 @@ import { Building } from "./models/Building";
 
 import { Entity } from "./models/General";
 import { AI } from "./AI";
-import { randomChooseFrom, drawEntity, drawExplosion } from "./Utils";
+import {
+  randomChooseFrom,
+  drawEntity,
+  drawExplosion,
+  randomNumber,
+} from "./Utils";
 import { buildingsGenerator } from "./MapGenerator";
 
 let count = 0;
@@ -92,9 +97,10 @@ function loadPlayerTank() {
 }
 
 function update() {
+  let playerLevel = GAME.tanks[0].level;
   if (paused) return;
   if (count === 0) {
-    if (Math.random() > 0.7) {
+    if (Math.random() > 0.7 - playerLevel / 50) {
       GAME.tanks.push(
         new Tank(
           {
@@ -102,7 +108,8 @@ function update() {
             y: 0,
           },
           DIRECTION.DOWN,
-          randomChooseFrom(ENEMY_TANKS)
+          randomChooseFrom(ENEMY_TANKS),
+          randomNumber((playerLevel * 2) / 3, playerLevel + 5)
         )
       );
     }
