@@ -42,30 +42,21 @@ function buildingsGenerator() {
 function generateMap() {
   let i = randomNumber(8, 12);
   let j = randomNumber(12, 18);
+
   generateBlock(
     BUILDING.STEEL,
-    { x: i, y: i },
-    { x: (rowNum - i) / 2, y: (colNum - i) / 2 }
+    { x: i + 2, y: colNum / 2 + 6 },
+    { x: rowNum / 2, y: colNum - i }
   );
   generateBlock(
-    BUILDING.STEEL,
-    { x: j + rowNum / 2, y: j },
+    BUILDING.BRICK,
+    { x: i, y: i },
+    { x: rowNum / 2, y: colNum / 2 }
+  );
+  generateBlock(
+    BUILDING.BRICK,
+    { x: rowNum / 2 + 4, y: j + 5 },
     { x: rowNum - j, y: colNum - j }
-  );
-  generateBlock(
-    BUILDING.STEEL,
-    { x: j, y: rowNum / 2 - j },
-    { x: j + 5, y: rowNum / 2 - j + 4 }
-  );
-  generateLine(
-    BUILDING.BRICK,
-    { x: i, y: i },
-    { x: rowNum - i, y: colNum - i }
-  );
-  generateLine(
-    BUILDING.BRICK,
-    { x: i, y: colNum - i },
-    { x: rowNum - i, y: i }
   );
 }
 
@@ -87,6 +78,13 @@ function generateLine(
   startPoint: Coordinate,
   endPoint: Coordinate
 ) {
+  if (
+    Math.max(
+      Math.abs(startPoint.x - endPoint.x),
+      Math.abs(startPoint.y - endPoint.y)
+    ) <= 2
+  )
+    return;
   if (
     Math.abs(startPoint.x - endPoint.x) > Math.abs(startPoint.y - endPoint.y)
   ) {

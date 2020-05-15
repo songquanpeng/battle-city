@@ -63,11 +63,11 @@ class Tank implements Entity {
     switch (this.type) {
       case TANK.PLAYER_TANK:
         this.basic = {
-          blood: 10,
+          blood: 15,
           armor: 0.5,
           speed: 2.5,
           attackInterval: 45,
-          bulletDamage: 5,
+          bulletDamage: 8,
           bulletSpeed: 15,
         };
         break;
@@ -75,20 +75,20 @@ class Tank implements Entity {
         this.basic = {
           blood: 10,
           armor: 0.5,
-          speed: 2.5,
+          speed: 1.8,
           attackInterval: 45,
-          bulletDamage: 4,
-          bulletSpeed: 10,
+          bulletDamage: 6,
+          bulletSpeed: 7,
         };
         break;
       case TANK.SWIFT_TANK:
         this.basic = {
-          blood: 6,
+          blood: 7,
           armor: 0.35,
-          speed: 3.5,
+          speed: 3,
           attackInterval: 30,
-          bulletDamage: 5,
-          bulletSpeed: 15,
+          bulletDamage: 4,
+          bulletSpeed: 12,
         };
         break;
       case TANK.HEAVY_TANK:
@@ -98,7 +98,7 @@ class Tank implements Entity {
           speed: 0.7,
           attackInterval: 60,
           bulletDamage: 10,
-          bulletSpeed: 4,
+          bulletSpeed: 3,
         };
         break;
       default:
@@ -117,12 +117,12 @@ class Tank implements Entity {
   }
 
   calculateAttributes(): void {
-    this.blood = Math.min(this.basic.blood + 25, this.basic.blood + this.level);
+    this.blood = Math.min(this.basic.blood + 25, this.basic.blood + 1);
     this.speed = Math.min(
       this.basic.speed + 8,
       this.basic.speed + this.level * 0.1
     );
-    this.armor = Math.min(0.8, this.basic.armor + this.level * 0.04);
+    this.armor = Math.min(0.8, this.basic.armor + this.level * 0.01);
     this.bullet.speed = Math.min(
       this.basic.speed + 15,
       this.basic.bulletSpeed + this.level * 0.1

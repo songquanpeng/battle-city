@@ -69,10 +69,10 @@ function drawExplosion(type: EXPLOSION, coordinate: Coordinate) {
     rect[1],
     rect[2],
     rect[3],
-    coordinate.x - EXPLOSION_RADIUS,
-    coordinate.y - EXPLOSION_RADIUS,
-    EXPLOSION_RADIUS * 2,
-    EXPLOSION_RADIUS * 2
+    coordinate.x - rect[2] / 2,
+    coordinate.y - rect[3] / 2,
+    rect[2],
+    rect[3]
   );
 }
 

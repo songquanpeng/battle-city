@@ -121,7 +121,7 @@ enum EXPLOSION {
 
 const EXPLOSION_IMAGE = [
   [1064, 520, 44, 44],
-  [1244, 516, 124, 116],
+  [1180, 512, 64, 64],
 ];
 
 enum BUILDING {
