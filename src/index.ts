@@ -109,7 +109,7 @@ function update() {
           },
           DIRECTION.DOWN,
           randomChooseFrom(ENEMY_TANKS),
-          randomNumber((playerLevel * 2) / 3, playerLevel + 5)
+          randomNumber(playerLevel / 3, playerLevel + 1)
         )
       );
     }

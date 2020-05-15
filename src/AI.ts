@@ -39,8 +39,12 @@ function AI(agent: Tank, target: Entity) {
           ACTION.SHOOT,
           ACTION.SHOOT,
           ACTION.SHOOT,
+          ACTION.DO_NOTHING,
+          ACTION.DO_NOTHING,
+          ACTION.DO_NOTHING,
+          ACTION.SHOOT,
         ]);
-      } else if (random < 0.8) {
+      } else if (random < 0.7) {
         if (Math.floor(random * 100) % 2 === 0) {
           if (agent.coordinate.x < target.coordinate.x) {
             agent.actionList.push(ACTION.MOVE_RIGHT);
@@ -54,18 +58,36 @@ function AI(agent: Tank, target: Entity) {
             agent.actionList.push(ACTION.MOVE_UP);
           }
         }
-      } else if (random < 0.8) {
+        agent.actionList.concat([ACTION.SHOOT, ACTION.SHOOT]);
+      } else if (random < 0.75) {
         agent.actionList.concat([
           ACTION.MOVE_UP,
           ACTION.DO_NOTHING,
           ACTION.SHOOT,
+          ACTION.DO_NOTHING,
+          ACTION.SHOOT,
+        ]);
+      } else if (random < 0.8) {
+        agent.actionList.concat([
           ACTION.MOVE_LEFT,
           ACTION.DO_NOTHING,
           ACTION.SHOOT,
+          ACTION.DO_NOTHING,
+          ACTION.SHOOT,
+        ]);
+      } else if (random < 0.85) {
+        agent.actionList.concat([
+          ACTION.MOVE_RIGHT,
+          ACTION.DO_NOTHING,
+          ACTION.SHOOT,
+          ACTION.DO_NOTHING,
+          ACTION.SHOOT,
+        ]);
+      } else if (random < 0.9) {
+        agent.actionList.concat([
           ACTION.MOVE_DOWN,
           ACTION.DO_NOTHING,
           ACTION.SHOOT,
-          ACTION.MOVE_RIGHT,
           ACTION.DO_NOTHING,
           ACTION.SHOOT,
         ]);
