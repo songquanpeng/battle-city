@@ -78,7 +78,10 @@ function savePlayerTank() {
 
 function loadPlayerTank() {
   let data = window.localStorage.getItem("state");
-  if (!data) data = "";
+  if (!data) {
+    generatePlayTank();
+    return;
+  }
   let state = JSON.parse(data);
   let tank = new Tank(
     { x: context.canvas.width / 2, y: context.canvas.height },
