@@ -117,7 +117,7 @@ class Tank implements Entity {
   }
 
   calculateAttributes(): void {
-    this.blood = Math.min(this.basic.blood + 25, this.basic.blood + 1);
+    this.blood = Math.min(this.basic.blood + 25, this.blood + 1);
     this.speed = Math.min(
       this.basic.speed + 8,
       this.basic.speed + this.level * 0.1

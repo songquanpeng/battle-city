@@ -24,15 +24,62 @@ function AI(agent: Tank, target: Entity) {
     case ACTION.STAY:
       agent.moving = false;
       break;
+    case ACTION.MOVE:
+      agent.moving = true;
+      break;
     case ACTION.SHOOT:
       agent.shoot();
       break;
     case ACTION.DO_NOTHING:
       break;
+    case ACTION.TURN_LEFT:
+      agent.direction += 2;
+      agent.direction %= 4;
+      break;
+    case ACTION.TURN_RIGHT:
+      switch (agent.direction) {
+        case DIRECTION.DOWN:
+          agent.direction = DIRECTION.LEFT;
+          break;
+        case DIRECTION.UP:
+          agent.direction = DIRECTION.RIGHT;
+          break;
+        case DIRECTION.LEFT:
+          agent.direction = DIRECTION.UP;
+          break;
+        case DIRECTION.RIGHT:
+          agent.direction = DIRECTION.DOWN;
+          break;
+        default:
+          break;
+      }
+      break;
     default:
       agent.moving = true;
+      let end = false;
+      if (agent.coordinate.x == target.coordinate.x) {
+        if (agent.direction == DIRECTION.UP) {
+          if (agent.coordinate.y >= target.coordinate.y) {
+            agent.actionList.push(ACTION.SHOOT);
+          } else {
+            agent.actionList.push(ACTION.TURN_RIGHT);
+          }
+          end = true;
+        }
+      }
+      if (agent.coordinate.y == target.coordinate.y) {
+        if (agent.direction == DIRECTION.LEFT) {
+          if (agent.coordinate.x >= target.coordinate.x) {
+            agent.actionList.push(ACTION.SHOOT);
+          } else {
+            agent.actionList.push(ACTION.TURN_LEFT);
+          }
+          end = true;
+        }
+      }
+      if (end) return;
       const random = Math.random();
-      if (random < 0.5) {
+      if (random < 0.4) {
         agent.actionList.push(randomChooseFrom(ACTIONS));
         agent.actionList.concat([
           ACTION.SHOOT,
