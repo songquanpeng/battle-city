@@ -57,7 +57,7 @@ function AI(agent: Tank, target: Entity) {
     default:
       agent.moving = true;
       let end = false;
-      if (agent.coordinate.x == target.coordinate.x) {
+      if (Math.abs(agent.coordinate.x - target.coordinate.x) < target.radius) {
         if (agent.direction == DIRECTION.UP) {
           if (agent.coordinate.y >= target.coordinate.y) {
             agent.actionList.push(ACTION.SHOOT);
@@ -67,7 +67,7 @@ function AI(agent: Tank, target: Entity) {
           end = true;
         }
       }
-      if (agent.coordinate.y == target.coordinate.y) {
+      if (Math.abs(agent.coordinate.y - target.coordinate.y) < target.radius) {
         if (agent.direction == DIRECTION.LEFT) {
           if (agent.coordinate.x >= target.coordinate.x) {
             agent.actionList.push(ACTION.SHOOT);
