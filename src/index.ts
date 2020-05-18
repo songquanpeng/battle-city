@@ -201,7 +201,7 @@ function showStatus() {
     30
   );
   context.fillText(
-    `speed: ${player.speed.toFixed(1)} level: ${player.level}`,
+    `speed: ${player.speed.toFixed(2)} level: ${Math.floor(player.level)}`,
     20,
     50
   );

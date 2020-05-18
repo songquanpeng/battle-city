@@ -55,7 +55,6 @@ class Tank implements Entity {
       damage: 5,
       speed: 10,
     };
-    this.blood = 10;
     this.armor = 0.5;
     this.speed = 2.5;
     this.attackInterval = 40;
@@ -63,7 +62,7 @@ class Tank implements Entity {
     switch (this.type) {
       case TANK.PLAYER_TANK:
         this.basic = {
-          blood: 15,
+          blood: 20,
           armor: 0.5,
           speed: 2.5,
           attackInterval: 45,
@@ -87,7 +86,7 @@ class Tank implements Entity {
           armor: 0.35,
           speed: 3,
           attackInterval: 30,
-          bulletDamage: 4,
+          bulletDamage: 3,
           bulletSpeed: 12,
         };
         break;
@@ -113,14 +112,15 @@ class Tank implements Entity {
         console.error("Unexpected tank type: " + this.type);
         break;
     }
+    this.blood = this.basic.blood;
     this.calculateAttributes();
   }
 
   calculateAttributes(): void {
-    this.blood = Math.min(this.basic.blood + 25, this.blood + 1);
+    this.blood = Math.min(this.basic.blood + 30, this.blood + 2);
     this.speed = Math.min(
       this.basic.speed + 8,
-      this.basic.speed + this.level * 0.1
+      this.basic.speed + this.level * 0.05
     );
     this.armor = Math.min(0.8, this.basic.armor + this.level * 0.01);
     this.bullet.speed = Math.min(
