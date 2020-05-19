@@ -1,18 +1,10 @@
-import {
-  AUDIO,
-  BULLET_RADIUS,
-  DIRECTION,
-  EXPLOSION,
-  IMAGE,
-  TANK,
-} from "../Constants";
+import { AUDIO, BULLET_RADIUS, DIRECTION, EXPLOSION, TANK } from "../Constants";
 
 import { context, GAME } from "../index";
 
 import { Tank } from "./Tank";
 
 import { Coordinate, Entity } from "./General";
-import { drawEntity } from "../Utils";
 
 class Bullet implements Entity {
   canTankPass: boolean;
@@ -145,10 +137,6 @@ class Bullet implements Entity {
         break;
       }
     }
-  }
-
-  draw() {
-    drawEntity(this);
   }
 
   beAttacked(param: Bullet, attacker: Entity): void {

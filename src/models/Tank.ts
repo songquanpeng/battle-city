@@ -1,4 +1,4 @@
-import { AUDIO, DIRECTION, IMAGE, TANK, TANK_RADIUS } from "../Constants";
+import { AUDIO, DIRECTION, TANK, TANK_RADIUS } from "../Constants";
 
 import { context, GAME } from "../index";
 
@@ -229,65 +229,6 @@ class Tank implements Entity {
       if (this.type === TANK.PLAYER_TANK) {
         AUDIO.shoot.play().then(() => {});
       }
-    }
-  }
-
-  draw() {
-    switch (this.type) {
-      case TANK.PLAYER_TANK:
-        context.drawImage(
-          IMAGE,
-          32 * this.direction,
-          0,
-          32,
-          32,
-          this.coordinate.x - 16,
-          this.coordinate.y - 16,
-          32,
-          32
-        );
-        break;
-      case TANK.NORMAL_TANK:
-        context.drawImage(
-          IMAGE,
-          32 * this.direction,
-          32,
-          32,
-          32,
-          this.coordinate.x - 16,
-          this.coordinate.y - 16,
-          32,
-          32
-        );
-        break;
-      case TANK.SWIFT_TANK:
-        context.drawImage(
-          IMAGE,
-          32 * (4 + this.direction),
-          32,
-          32,
-          32,
-          this.coordinate.x - 16,
-          this.coordinate.y - 16,
-          32,
-          32
-        );
-        break;
-      case TANK.HEAVY_TANK:
-        context.drawImage(
-          IMAGE,
-          32 * (8 + this.direction),
-          32 * 2,
-          32,
-          32,
-          this.coordinate.x - 16,
-          this.coordinate.y - 16,
-          32,
-          32
-        );
-        break;
-      default:
-        break;
     }
   }
 }

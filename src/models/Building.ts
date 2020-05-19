@@ -1,6 +1,4 @@
-import { BUILDING, BUILDING_RADIUS, IMAGE } from "../Constants";
-
-import { context } from "../index";
+import { BUILDING, BUILDING_RADIUS } from "../Constants";
 
 import { Coordinate, Entity } from "./General";
 
@@ -52,22 +50,6 @@ class Building implements Entity {
   beAttacked(bullet: Bullet, attacker: Entity) {
     if (bullet.damage >= this.destroyLimit) {
       this.alive = false;
-    }
-  }
-
-  draw() {
-    if (this.alive) {
-      context.drawImage(
-        IMAGE,
-        16 * this.type,
-        96,
-        16,
-        16,
-        this.coordinate.x - 8,
-        this.coordinate.y - 8,
-        16,
-        16
-      );
     }
   }
 

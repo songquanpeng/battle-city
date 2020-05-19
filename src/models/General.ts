@@ -17,8 +17,6 @@ interface Entity {
   canBulletPass: boolean;
   type: any;
 
-  draw(): void;
-
   beAttacked(param: Bullet, attacker: Entity): void;
 
   levelUp(): void;
