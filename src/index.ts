@@ -103,7 +103,7 @@ function update() {
   let playerLevel = GAME.tanks[0].level;
   if (paused) return;
   if (count === 0) {
-    if (Math.random() > 0.8 - playerLevel / 70) {
+    if (Math.random() > 0.8 - playerLevel / 1000) {
       GAME.tanks.push(
         new Tank(
           {
@@ -112,7 +112,7 @@ function update() {
           },
           DIRECTION.DOWN,
           randomChooseFrom(ENEMY_TANKS),
-          randomNumber(playerLevel / 3, playerLevel + 1)
+          randomNumber(playerLevel / 3, playerLevel / 2 + 1)
         )
       );
     }

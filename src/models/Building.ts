@@ -25,7 +25,7 @@ class Building implements Entity {
         this.canBulletPass = false;
         break;
       case BUILDING.STEEL:
-        this.destroyLimit = 20;
+        this.destroyLimit = 50;
         this.canTankPass = false;
         this.canBulletPass = false;
         break;

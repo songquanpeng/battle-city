@@ -66,14 +66,14 @@ class Tank implements Entity {
           armor: 0.5,
           speed: 2.5,
           attackInterval: 45,
-          bulletDamage: 8,
+          bulletDamage: 12,
           bulletSpeed: 15,
         };
         break;
       case TANK.NORMAL_TANK:
         this.basic = {
           blood: 10,
-          armor: 0.5,
+          armor: 0.4,
           speed: 1.8,
           attackInterval: 45,
           bulletDamage: 6,
@@ -82,8 +82,8 @@ class Tank implements Entity {
         break;
       case TANK.SWIFT_TANK:
         this.basic = {
-          blood: 7,
-          armor: 0.35,
+          blood: 5,
+          armor: 0.2,
           speed: 3,
           attackInterval: 30,
           bulletDamage: 3,
@@ -93,7 +93,7 @@ class Tank implements Entity {
       case TANK.HEAVY_TANK:
         this.basic = {
           blood: 20,
-          armor: 0.7,
+          armor: 0.5,
           speed: 0.7,
           attackInterval: 60,
           bulletDamage: 10,
@@ -120,7 +120,7 @@ class Tank implements Entity {
     this.blood = Math.min(this.basic.blood + 30, this.blood + 2);
     this.speed = Math.min(
       this.basic.speed + 8,
-      this.basic.speed + this.level * 0.05
+      this.basic.speed + this.level * 0.025
     );
     this.armor = Math.min(0.8, this.basic.armor + this.level * 0.01);
     this.bullet.speed = Math.min(
