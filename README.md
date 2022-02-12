@@ -3,7 +3,7 @@
 <summary><strong><i>Click here to expend English readme</i></strong></summary>
 <div>
 
-[**\>\>\> Start Game <<<**](https://songquanpeng.github.io/battle-city/)
+[**\>\>\> Start Game <<<**](https://tank.justsong.cn/)
 
 |Key|Description|
 |---|---|
@@ -24,7 +24,7 @@
 ## 描述
 基于 TypeScript 的坦克大战的非标准实现。
 
-[**\>\>\> 开始游戏 <<<**](https://songquanpeng.github.io/battle-city/)
+[**\>\>\> 开始游戏 <<<**](https://tank.justsong.cn/)
 
 |按键|描述|
 |---|---|
